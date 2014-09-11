@@ -1,0 +1,35 @@
+citHeader("To cite the NGScopy in publications use:")
+
+citEntry(entry="article",
+  author   = "Xiaobei Zhao, Anyou Wang, ..., D Neil Hayes, Stergios J Moschos",
+  title    = "Targeted Sequencing in Non-Small Cell Lung Cancer (NSCLC) Using the University of North Carolina (UNC) Sequencing Assay Captures Most Previously Described Genetic Aberrations in NSCLC",
+  journal  = "In preparation",
+  year     = 2014,
+  textVersion=
+    paste("Zhao et al (2014),",
+          "Targeted Sequencing in Non-Small Cell Lung Cancer (NSCLC) Using the University of North Carolina (UNC) Sequencing Assay Captures Most Previously Described Genetic Aberrations in NSCLC,", 
+          "In preparation.",
+          sep=" ")
+)
+
+
+citEntry(
+  entry="Manual",
+  title = "NGScopy: Detection of copy number variations in next generation sequencing",
+  author = personList(
+    as.person("Xiaobei Zhao")
+    ),
+  year = "2014",
+  url = "http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html",
+  note = "Bioconductor/R package",
+  textVersion = 
+  paste(
+    "Zhao, Xiaobei",
+    "NGScopy: Detection of copy number variations in next generation sequencing", 
+    "Bioconductor/R package",
+    "2014",
+    "http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html",
+    sep=". "
+  ),
+  header = "Also please use the following citation:"
+  )

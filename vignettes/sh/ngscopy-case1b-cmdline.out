@@ -1,0 +1,115 @@
+/home/xiaobei/supplemental2/usr/local/lib64/R/library/NGScopy/bin/ngscopy
+Loading required package: methods
+Loading required package: Xmisc
+Loading required package: NGScopy
+auto.save: FALSE
+auto.load: FALSE
+20140815 10:02:42 EDT | set_normal | inFpathN
+inFpathN: /home/xiaobei/supplemental2/usr/local/lib64/R/library/NGScopyData/extdata/tps_N8.chr6.sort.bam
+
+20140815 10:02:42 EDT | set_tumor | inFpathT
+inFpathT: /home/xiaobei/supplemental2/usr/local/lib64/R/library/NGScopyData/extdata/tps_90.chr6.sort.bam
+
+20140815 10:02:42 EDT | set_outFpre
+outFpre: ngscopy-case1b-cmdline
+
+20140815 10:02:42 EDT | set_libsize | libsizeN
+libsizeN: 5777087
+
+20140815 10:02:42 EDT | set_libsize | libsizeT
+libsizeT: 4624267
+
+20140815 10:02:42 EDT | set_normal | mindepth
+mindepth: 20
+
+20140815 10:02:42 EDT | set_normal | minsize
+minsize: 20000
+
+20140815 10:02:42 EDT | set_regions
+20140815 10:02:42 EDT | .proc_ref | process reference genome (in bam header of the normal sample)
+20140815 10:02:42 EDT | .trim_regions | trim regsions if exceeding the reference
+20140815 10:02:42 EDT | .sort_regions | sort regions by reference
+regions: 
+chr6 0 171115067
+
+20140815 10:02:42 EDT | set_segtype
+segtype: c("mean.norm")
+
+20140815 10:02:42 EDT | set_ds | dsN
+dsN: 1
+
+20140815 10:02:42 EDT | set_ds | dsT
+dsT: 1
+
+20140815 10:02:42 EDT | set_pcThreads
+pcThreads: 1
+
+20140815 10:02:42 EDT | write_cn
+20140815 10:02:42 EDT | proc_cn
+20140815 10:02:42 EDT | proc_normal | this may take a while depending on the size of your library.
+20140815 10:02:42 EDT | (PID: 54971) Processing coords (refid, start, end): 5, 0, 171115067
+20140815 10:04:02 EDT | Processed all 1 regions.
+20140815 10:04:02 EDT | proc_tumor | this may take a while depending on the size of your library.
+20140815 10:05:12 EDT | Processed all 2808 windows.
+20140815 10:05:12 EDT | calc_cn
+20140815 10:05:12 EDT | set_MoreArgs.cn
+MoreArgs.cn not specified, assuming list(pseudocount=1,logr=TRUE).
+MoreArgs.cn: 
+List of 2
+ $ pseudocount: num 1
+ $ logr       : logi TRUE
+
+
+20140815 10:05:12 EDT | calc_cn | done
+out$cn:
+List of 3
+ $ cnr        : num [1:2808] 0.0163 -0.3708 -0.2638 -0.1643 -0.2232 ...
+ $ pseudocount: num 1
+ $ logr       : logi TRUE
+
+
+
+File saved: 
+outFpath="ngscopy-case1b-cmdline/ngscopy_cn.txt"
+
+20140815 10:05:12 EDT | write_seg
+20140815 10:05:12 EDT | proc_seg
+20140815 10:05:12 EDT | calc_seg
+20140815 10:05:12 EDT | set_MoreArgs.seg
+MoreArgs.seg not specified, assuming list().
+MoreArgs.seg: 
+ list()
+
+
+20140815 10:05:12 EDT | calc_seg | done
+out$seg:
+List of 1
+ $ mean.norm:List of 1
+  ..$ chr6:Formal class 'cpt' [package "changepoint"] with 10 slots
+  .. .. ..@ data.set : Time-Series [1:2808] from 1 to 2808: 0.0163 -0.3708 -0.2638 -0.1643 -0.2232 ...
+  .. .. ..@ cpttype  : chr "mean"
+  .. .. ..@ method   : chr "PELT"
+  .. .. ..@ test.stat: chr "Normal"
+  .. .. ..@ pen.type : chr "SIC"
+  .. .. ..@ pen.value: num 7.94
+  .. .. ..@ cpts     : int [1:6] 550 551 1141 1951 1953 2808
+  .. .. ..@ ncpts.max: num Inf
+  .. .. ..@ param.est:List of 1
+  .. .. .. ..$ mean: num [1:6] 0.0801 -4.0712 -0.0345 -0.418 -3.3285 ...
+  .. .. ..@ date     : chr "Wed Jul 23 19:59:37 2014"
+
+
+
+File saved: 
+outFpath="ngscopy-case1b-cmdline/ngscopy_seg.txt"
+
+20140815 10:05:12 EDT | plot_cn
+chr=chr6, segtype=mean.norm
+
+File saved: 
+pdfFpath="ngscopy-case1b-cmdline/ngscopy_out.pdf"
+
+
+real	2m48.398s
+user	2m47.147s
+sys	0m0.298s

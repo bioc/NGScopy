@@ -1,0 +1,1067 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+
+%\VignetteIndexEntry{NGScopy: Detection of copy number variations in next generation sequencing: case studies and functionality}
+%\VignettePackage{NGScopy}
+%\VignetteDepends{NGScopyData}
+%\VignetteKeywords{Sequencing, CopyNumberVariation, DNASeq, TargetedResequencing, ExomeSeq, WholeGenome}
+%\VignetteEngine{utils::Sweave}
+
+%% http://www.bioconductor.org/packages/devel/bioc/html/NGScopy.html
+%% http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html
+
+
+
+%% ========================================================================
+%% 
+%% ========================================================================
+
+\documentclass{article}
+
+\usepackage{Xvignette}
+
+%% ------------------------------------------------------------------------
+%% 
+%% ------------------------------------------------------------------------
+
+\newcommand{\NGScopy}{\software{NGScopy}}
+\newcommand{\NGScopyData}{\software{NGScopyData}}
+
+
+
+%% ------------------------------------------------------------------------
+%% 
+%% ------------------------------------------------------------------------
+
+%% \newcommand{\currversion}{%
+%% <<echo=FALSE,eval=TRUE,results=tex>>=%
+%%   cat(as.character(packageVersion("NGScopy")))
+%% @%
+%% }
+%% \newcommand{\currdate}{%
+%% <<echo=FALSE,eval=TRUE,results=tex>>=%
+%%   cat(unlist(strsplit(packageDescription('NGScopy')[['Date']],' '))[1])
+%% @%
+%% }
+
+\newcommand{\currversion}{%
+<<echo=FALSE,eval=TRUE,results=tex>>=%
+  cat(as.character(packageVersion('NGScopy')))
+@%
+}
+\newcommand{\currdate}{%
+<<echo=FALSE,eval=TRUE,results=tex>>=%
+  cat(unlist(strsplit(packageDescription('NGScopy')[['Date']],' '))[1])
+@%
+}
+
+
+\newcommand{\BAM}{\software{BAM}}
+
+
+\newcommand{\nsegtype}{%
+<<echo=FALSE,eval=TRUE,results=tex>>=%
+  cat(length(NGScopy::parse_segtype()))
+@%
+}
+
+
+
+%% ------------------------------------------------------------------------
+%% newcommand
+%% ------------------------------------------------------------------------
+
+\newcommand\citezhaoLungC{\cite{Zhao2014ip-Tmanuscript}}
+\newcommand\citeNGScopy{\cite{Zhao2014un-Na}}
+\newcommand\citeNGScopyData{\cite{Zhao2014un-N}}
+
+\newcommand\riw{restriction-imposed windowing}
+
+%% ------------------------------------------------------------------------
+%% title
+%% ------------------------------------------------------------------------
+
+\title{
+  \Bioconductor{} \NGScopy{}: User's Guide (\currversion{})
+}
+
+\subtitle{
+  A fast and robust algorithm to detect copy number variations by \\
+\quotes{\riw{}} in next generation sequencing
+}
+
+
+\author[1]{Xiaobei Zhao\thanks{\lccc\ \emailme{NGScopy-\currversion}}}
+\affil[1]{Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill}
+\renewcommand\Authands{ and }
+
+
+
+%% \date{June 23, 2014}
+
+\date{
+Modified: \currdate \quad Compiled: \mydate{\today}
+}
+
+\def\aftertitle{
+  You may find the latest version of \NGScopy{} and this documentation at, \\
+  \url{http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html}\\
+}
+
+
+
+%% ------------------------------------------------------------------------
+%% 
+%% ------------------------------------------------------------------------
+
+\pagestyle{fancy}
+
+\fancyhf{} %Clear Everything.
+\fancyfoot[C]{\thepage} %Page Number
+\fancyhead[LE,RO]{\zhao{}}
+\fancyhead[LO,RE]{\Bioconductor{} \NGScopy{}}
+
+
+%% ========================================================================
+%% document
+%% ========================================================================
+
+\begin{document}
+\thispagestyle{empty}
+
+
+%% ------------------------------------------------------------------------
+%% Overall Sweave and R options
+%% ------------------------------------------------------------------------
+\SweaveOpts{keep.source=TRUE,strip.white=true}
+\SweaveOpts{engine=R,eps=FALSE,pdf=TRUE}
+\SweaveOpts{prefix=TRUE,prefix.string=ngscopy,include=TRUE} 
+\SweaveOpts{width=10,height=8}
+\SweaveOpts{quiet=TRUE}
+\setkeys{Gin}{width=0.75\linewidth}
+
+
+
+%% ------------------------------------------------------------------------
+%% title
+%% ------------------------------------------------------------------------
+
+
+\maketitle
+
+\aftertitle
+
+\keywords{Sequencing, Copy Number Variation, DNASeq, Targeted Panel Sequencing, Whole Exome Sequencing, Whole Genome Sequencing, Parallel Processing}
+
+\vspace{6ex}
+
+
+
+%% ------------------------------------------------------------------------
+%% tableofcontents
+%% ------------------------------------------------------------------------
+
+\pdfbookmark[section]{\contentsname}{toc}
+\tableofcontents
+
+
+
+%% %% ------------------------------------------------------------------------
+%% %% 
+%% %% ------------------------------------------------------------------------
+
+%% \begin{mdframed}
+%%   \lipsum
+%%   \lipsum
+%% \end{mdframed}
+
+
+%% ------------------------------------------------------------------------
+%% sections
+%% ------------------------------------------------------------------------
+
+
+\section{Introduction}
+
+%% why copy number
+Copy number variation (CNV) is a segment of DNA ($> 50$ basepair, bp) that has unbalanced number of copies (additions or deletions) with comparison to a control genome \cite{Feuk2006nrg-S,Girirajan2011arg-H,MacDonald2014nar-D}. CNVs from $50$ bp to $1$ kilobase (kb) are also considered as larger indels. CNVs are widely spread throughout the genome, cumulatively accounting for more than one tens of the human genomic DNA and encompassing a large number of our genes \cite{Redon2006n-G,Zack2013ng-PCP}. Genomic studies have provided insights into the role of CNVs in health and disease (reviewed in \cite{Beckmann2007nrg-C,McCarroll2007ng-C,Girirajan2011arg-H}), unveiling the contribution of CNVs in disease pathogenesis.
+
+%% why NGS - vs. SNP array
+For over a decade, microarray-based comparative genomic hybridization (arrayCGH or aCGH) and single nucleotide polymorphism microarrays (SNP array) have been \textit{de facto} standard technologies to detect genomic loci subject to CNVs until the emergence of next-generation sequencing (NGS) technologies providing high-resolution DNA sequence data for CNV analysis. 
+
+%% why TPS vs. WES/WGS
+There are three common modes of DNA sequencing: whole genome sequencing (WGS), whole exome sequencing (WES) and targeted panel sequencing (TPS). TPS, as a cost-effective solution, has been widely applied to simultaneously profile cancer-related genes, for instance to find somatic mutations. However, CNV analysis by TPS data has been progressing slowly due to the sparse and inhomogeneous nature of the targeted capture reaction in TPS than in WGS or WES. To address these unique properties, \NGScopy{} provides a \quotes{\riw{}} approach to generate balanced number of reads per window \citezhaoLungC{}, enabling a robust CNV detection in TPS, WES and WGS.
+
+\subsection{Requirement and scope}
+%% this user's manual
+This version of User's Guide introduces the functionality of \NGScopy{} by case studies. \NGScopy{} requires a pair of samples in \BAM{} (\code{.bam}) files to produce relative copy number ratios (CNRs) between a case and a control samples. In cancer research, the case is typically a tumor sample and the control is usually a matched or pooled normal sample, preferably under the same target enrichment protocol as the case.
+
+Major functionality includes,  
+\begin{itemize}
+\item Making windows by the control sample
+\item Counting reads per window in the control sample
+\item Counting reads per window in the case sample
+\item Computing relative CNRs between the case and the control
+\item Segmentation
+\item Visualization
+\end{itemize}
+
+The above functions have been intensively tested, and we plan to develop and incorporate more related functionality for CNV analysis. Currently, the \BAM{} file parser is integrated by using the \R{} (\CRAN{}) package \code{rbamtools} \cite{Kaisers2014un-R} and the segmentation is integrated by using the \R{} (\CRAN{}) package \code{changepoint} \cite{Killick2014un-C}. Users can also retrieve and modify the produced CNRs and try one of many other available segmentation algorithms, such as \software{BioHMM} \cite{Marioni2006b-B}. 
+
+
+%% <<echo=TRUE,eval=FALSE,results=verbatim>>=
+%% ## install prerequisites for NGScopy
+%% install.packages("Xmisc")
+%% install.packages("rbamtools")
+%% install.packages("changepoint")
+%% @ 
+
+\subsection{Package installation}
+\begin{mdframed}
+<<echo=TRUE,eval=FALSE,results=verbatim>>=
+## install NGScopy
+source("http://bioconductor.org/biocLite.R")
+biocLite("NGScopy")
+@ 
+
+<<echo=TRUE,eval=FALSE,results=verbatim>>=
+## install NGScopyData for example data sets used in this guide
+biocLite("NGScopyData")
+@ 
+\end{mdframed}
+
+
+
+
+\subsection{A quick start}
+\label{sec:quickstart}
+A typical \NGScopy{} analysis uses a pair of normal/tumor samples to detect the relative CNRs (in $log_2$). It assumes there are two libraries of DNA sequencing read alignments in \BAM{} format, sorted and with index. The total size of each library is also known. 
+
+We can either perform the \NGScopy{} analysis using a single processor (\code{pcThreads=1} as below) or parallelize a \NGScopy{} call across chromosomes or regions by setting \code{pcThreads} larger than $1$ and up to the appropriate processor/memory limit of the system.
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Load R libraries
+require("NGScopy")
+require("NGScopyData")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Create an instance of `NGScopy' class
+obj <- NGScopy$new(
+  outFpre="ngscopy-case1",         # specified directory for output
+  inFpathN=tps_N8.chr6()$bamFpath, # normal sample: tps_90.chr6.sort.bam
+  inFpathT=tps_90.chr6()$bamFpath, # tumor sample:  tps_N8.chr6.sort.bam
+  libsizeN=5777087,                # the library size of the normal sample
+  libsizeT=4624267,                # the library size of the tumor sample
+  mindepth=20,                     # the minimal depth of reads per window
+  minsize=20000,                   # the minimal size of a window
+  regions=NULL,                    # the regions, set to NULL for the entire genome
+  segtype="mean.cusum",            # the type of segmentation
+  dsN=1,                           # the downsampling factor of the normal 
+  dsT=1,                           # the downsampling factor of the tumor
+  pcThreads=1                      # the number of processors for computing
+  )
+@  
+
+<<echo=TRUE,eval=FALSE,results=verbatim>>=
+## Compute the relative CNRs and save it
+## A data.frame will be saved to file `ngscopy_cn.txt' in the output directory
+obj$write_cn()
+@  
+
+<<echo=TRUE,eval=FALSE,results=verbatim>>=
+## Compute the segmentation and save it
+## A data.frame will be saved to file `ngscopy_seg.txt' in the output directory
+obj$write_seg()
+@  
+
+<<echo=TRUE,eval=FALSE,results=verbatim>>=
+## Plot he relative CNRs with the segmentation
+## Figure(s) will be saved to file `ngscopy_out.pdf' in the output directory
+obj$plot_cn() 
+@
+\end{mdframed}
+
+\vspace{6ex}
+In the above code, we use the data provided in \Bioconductor{} \NGScopyData{} package \citeNGScopyData{}. We first create an instance of \code{NGScopy} class, an \R{} reference class \cite{Chambers2014un-R}. Calling the method \code{write_cn} automatically calls the method \code{proc_normal}, \code{proc_tumor}, \code{calc_cn}, \code{proc_cn} and \code{write_cn} in a row to perform window making, read counting in both samples, CNR computing and results processing and saves it in a tab separated file. Calling the method \code{write_seg} automatically calls the method \code{calc_seg}, \code{proc_seg} and \code{write_seg} in a row to perform segmentation and results processing and saves it in a tab separated file. Finnaly we visualize the results and save it in a pdf file.
+
+This small piece of code provides a compact solution. You may also refer to a functional equivalent step-by-step approach described below in \hyperref[sec:case1]{\quotes{Case study I}}. 
+
+
+\newpage
+\section{Case study I: copy number detection of a case (tumor) sample compared to a control (normal) sample}
+\label{sec:case1}
+This section provides a step-by-step guide to using \NGScopy{} for copy number detection of a tumor sample compared to a pooled normal sample, similar steps for a matched normal. A complete source code of this case study is in \refface{Appendix} \ref{app:case1} on page \pageref{app:case1}.
+
+We will begin with a case study using the DNA sequencing data, \BAM{} files of TPS reads mapped to the human chromossome 6 (hg19), provided in \Bioconductor{} \NGScopyData{} package \citeNGScopyData{}. With limited space in the data package (\NGScopyData{}), each of these samples is a 10 percent random subsample drawn from the original sequencing data \citezhaoLungC{}. A later comparison and discussion of this $10\%$ subsample with the original full data set reveals an ability of \NGScopy{} to capture similar chromosome-wide CNV patterns (\refface{Appendix} \ref{app:fullngs} on page \pageref{app:fullngs}). 
+
+We are presenting the CNV detection of a human lung tumor sample  (\code{tps_90,chr6}) against a pooled normal sample (\code{tps_N8,chr6}). For fast compiling of this vignette, we limit our analysis to a subset region of each \BAM{} file: $chr6:41000001-81000000$, $20Mb$ upstream/downstream of the centromere. To do this, we assign an interval to the parameter \code{regions} which follows the BED format of zero-based, half-open intervals, \ie{} $(start,end]$.
+
+For normalization purpose, we also need to assign the library sizes (\code{libsizeN} and \code{libsizeT}). The library size of one sample is usually the total number reads of all chromosomes throughout the entire genome in the \BAM{} file. Because our example \BAM{} files only contain reads from $chr6$, the library sizes are computed according to the sequecning reads across all chromosomes of each sample in advance.
+
+There are two windowing parameters \code{mindepth} and \code{minsize}, indicating the minimal depth and size required to build a window. We can tune these two parameters according to the coverage characteristics of the samples. Generally, sparser libraries (\eg{} TPS) require a larger \code{minsize} while denser libraries (\eg{} WES and WGS) can have a smaller \code{minsize}. 
+
+We can also adjust the downsampling factor (an integer no less than $1$). By setting the downsampling factor to $n$, we randomly sample $1/n$ of the reads in the sample. For samples with very high depth of coverage, setting a larger downsampling factor would help speed up, however, with possible loss of resolution (\refface{Appendix} \ref{app:fullngs} on page \pageref{app:fullngs}). 
+
+
+\subsection[Create an instance of NGScopy class]{Create an instance of \code{NGScopy} class}
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+require(NGScopy)
+require(NGScopyData)
+obj <- NGScopy$new(
+  outFpre="ngscopy-case1",         # specified directory for output
+  inFpathN=tps_N8.chr6()$bamFpath, # normal sample: tps_90.chr6.sort.bam
+  inFpathT=tps_90.chr6()$bamFpath, # tumor sample:  tps_N8.chr6.sort.bam
+  libsizeN=5777087,                # the library size of the normal sample
+  libsizeT=4624267,                # the library size of the tumor sample
+  mindepth=20,                     # the minimal depth of reads per window
+  minsize=20000,                   # the minimal size of a window
+  regions=read_regions("chr6 41000000 81000000"),
+                                   # the regions, set to NULL for the entire genome
+  segtype="mean.norm",             # the type of segmentation
+  dsN=1,                           # the downsampling factor of the normal 
+  dsT=1,                           # the downsampling factor of the tumor
+  pcThreads=1                      # the number of processors for computing
+  )
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+obj$show()                         # print the instance
+@  
+%
+\end{mdframed}
+
+
+\subsection{Review the input}
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the input files
+obj$get_inFpathN()
+obj$get_inFpathT()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the library sizes
+obj$get_libsizeN()
+obj$get_libsizeT()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the windowing parameters
+obj$get_mindepth()
+obj$get_minsize()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the regions
+head(obj$get_regions())
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the segmentation type(s)
+head(obj$get_segtype())
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the downsampling factors
+obj$get_dsN()
+obj$get_dsT()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the number of processors
+obj$get_pcThreads()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the chromosome names of the reference genome 
+obj$get_refname()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the chromosome lengths of the reference genome 
+obj$get_reflength()
+@  
+%
+\end{mdframed}
+
+
+\subsection{Process reads in the control (normal) sample (Make windows as well)}
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+obj$proc_normal()                  # this may take a while
+@  
+%
+\end{mdframed}
+
+\subsection{Process reads in the case (tumor) sample}
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+obj$proc_tumor()                   # this may take a while
+@  
+%
+\end{mdframed}
+
+\subsection{Compute/Process the relative copy number ratios and save it}
+\begin{mdframed}
+<<echo=TRUE,eval=FALSE,results=verbatim>>=
+## A data.frame will be saved to file `ngscopy_cn.txt' in the output directory
+obj$calc_cn()
+obj$proc_cn()
+obj$write_cn()
+@  
+%
+\end{mdframed}
+
+\subsection{Compute/Process the segmentation and save it}
+\begin{mdframed}
+<<echo=TRUE,eval=FALSE,results=verbatim>>=
+## A data.frame will be saved to file `ngscopy_seg.txt' in the output directory
+obj$calc_seg()
+obj$proc_seg()
+obj$write_seg() 
+@ 
+%
+\end{mdframed}
+
+\subsection{Save the output for later reference}
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## The NGScopy output is saved as a ngscopy_out.RData file in the output directory
+obj$saveme()
+@  
+%
+\end{mdframed}
+
+
+\subsection{Load and review the output}
+%\begin{mdframed}
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Load the output
+## (optional if the previous steps have completed in the same R session)
+obj$loadme()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the output directory
+obj$get_outFpre()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the windows
+head(obj$get_windows())
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the window sizes
+head(obj$get_size())
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the window positions (midpoints of the windows)
+head(obj$get_pos())
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the number of reads per window in the normal
+head(obj$get_depthN())
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the number of reads per window in the tumor
+head(obj$get_depthT())
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get the data.frame of copy number calling
+data.cn <- obj$get_data.cn()
+head(data.cn)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+data.seg <- obj$get_data.seg()
+head(data.seg)
+@ 
+%
+%\end{mdframed}
+\end{mdframed}
+
+%% %% <<echo=TRUE,eval=TRUE,results=verbatim>>=
+%% %% ## Get the copy number
+%% %% str(obj$get_cn())
+%% %% @  
+
+%% %% <<echo=TRUE,eval=TRUE,results=verbatim>>=
+%% %% ## Get the segmentation
+%% %% str(obj$get_seg())
+%% %% @  
+
+
+\subsection{Visualize the output}
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## A figure will be saved to file `ngscopy_cn.pdf' in the output directory
+obj$plot_cn(ylim=c(-3,3))       # reset `ylim' to NULL to allow full-scale display
+@ 
+\end{mdframed}
+
+\vignetteFigure{ngscopy-case1/ngscopy_out.pdf}{Graphical output of \quotes{Case study I}, showing CNVs of $chr6:41000001-81000000$ of sample \code{tps_90} against \code{tps_N8}.}{0.5}{1}{Case study I}
+\vfill
+\clearpage
+
+
+
+
+%% ------------------------------------------------------------------------
+%% 
+%% ------------------------------------------------------------------------
+
+\section{Case Study I(b): Analyzing the entire chromosome}
+\label{sec:case1b}
+So far, we have conducted the copy nunber detection on a subregion of a chromosome ($chr6:41000001-81000000$). Now we would like to apply such analysis on the entrie chromosome by setting the \code{regions} accordingly, using the same data as in \hyperref[sec:case1]{\quotes{Case Study I}}.
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+obj <- NGScopy$new(
+  outFpre="ngscopy-case1b",        # specified directory for output
+  inFpathN=tps_N8.chr6()$bamFpath, # normal sample: tps_90.chr6.sort.bam
+  inFpathT=tps_90.chr6()$bamFpath, # tumor sample:  tps_N8.chr6.sort.bam
+  libsizeN=5777087,                # the library size of the normal sample
+  libsizeT=4624267,                # the library size of the tumor sample
+  mindepth=20,                     # the minimal depth of reads per window
+  minsize=20000,                   # the minimal size of a window
+  regions=read_regions("chr6 0 171115067"),
+                                   # the regions, set to NULL for the entire genome
+  segtype="mean.norm",             # the type of segmentation
+  dsN=1,                           # the downsampling factor of the normal 
+  dsT=1,                           # the downsampling factor of the tumor
+  pcThreads=1                      # the number of processors for computing
+  )
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Show the regions
+obj$get_regions()
+@
+\end{mdframed}
+
+We keep the rest codes intact and re-run them in the same order as in \hyperref[sec:case1]{\quotes{Case Study I}}.
+\vignetteFigure{ngscopy-case1b/ngscopy_out.pdf}{Graphical output of \quotes{Case study I(b)}, showing CNVs of the entire $chr6$ of the sample \code{tps_90} against the sample \code{tps_N8}.}{0.5}{1}{Case study I(b)}
+\vfill
+\clearpage
+
+
+%% ------------------------------------------------------------------------
+%% 
+%% ------------------------------------------------------------------------
+
+\section{Case Study I(c): Choosing types of segmentation}
+\label{sec:case1c}
+The \NGScopy{} package has integrated several external segmentation algorithms (\cite{Killick2014un-C}) to facilitate change-point detection.
+
+Currently there are \nsegtype{} types of segmentation available, which can be obtained by the following code:
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+NGScopy::parse_segtype()
+@
+\end{mdframed}
+
+Given a type of segmentation, we can get help of the algorithm by the code below, for instance,
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## NGScopy::help_segtype("mean.norm")
+@
+\end{mdframed}
+
+
+We can set the parameter \code{segtype} to either one or multiple values (separated by \quotes(,)) from the above. 
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+require(NGScopy)
+obj <- NGScopy$new()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set segtype with multiple values
+obj$set_segtype("mean.norm,meanvar.norm,mean.cusum,var.css")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Get segtype
+obj$get_segtype()
+@
+\end{mdframed}
+
+Using the same data and the same rest setting as in \hyperref[sec:case1b]{\quotes{Case Study I(b)}}, we have the chromosome segmented in \nsegtype{} ways,
+
+\vignetteFigure{ngscopy-case1c/ngscopy_out.pdf}{Graphical output of \quotes{Case study I(c)}, showing CNVs of the entire $chr6$ of the sample \code{tps_90} against the sample \code{tps_N8} using \nsegtype{} types of segmentation algorithms.}{0.9}{1}{Case study I(c)}
+\vfill
+\clearpage
+
+
+
+%% ========================================================================
+%% 
+%% ========================================================================
+
+\section{Case study II: copy number detection of multiple case (tumor) samples compared to a common control (normal) sample}
+\label{sec:case2}
+This section provides a step-by-step guide to using \NGScopy{} for copy number detection of multiple tumor samples compared to a common normal sample, for instance, a pooled normal sample. We are about analyzing two tumor samples (\code{tps_90,chr6} and \code{tps_27,chr6}) against one common pooled normal (\code{tps_N8,chr6}), provided in \Bioconductor{} \NGScopyData{} package \citeNGScopy{}, as described in \hyperref[sec:case1]{\quotes{Case study I}}. A complete source code of this case study is in \refface{Appendix} \ref{app:case2} on page \pageref{app:case2}. 
+
+
+\subsection{Process the common control (normal) sample}
+\label{sec:case2.1}
+
+We first analyze the normal sample, make the windows, count the reads and save the output to use with each of the tumor samples in \refface{Section} \ref{sec:case2.2} and \refface{Section} \ref{sec:case2.3}.
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+require(NGScopy)
+require(NGScopyData)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Create an instance of `NGScopy' class
+obj <- NGScopy$new(pcThreads=1)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set the normal sample
+obj$set_normal(tps_N8.chr6()$bamFpath)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set the regions
+regions <- read_regions("chr6 41000000 81000000")
+obj$set_regions(regions)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set the library size of the normal
+obj$set_libsizeN(5777087)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Specify a directory for output
+## It will be saved as "ngscopy_normal.RData" in this directory
+obj$set_outFpre("ngscopy-case2/tps_N8")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Show the input
+obj$show()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Make windows and count reads in the normal
+obj$proc_normal()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Save the output of the normal for later usage
+obj$save_normal()
+@
+\end{mdframed}
+
+
+\subsection{Process a case (tumor) sample}
+\label{sec:case2.2}
+Now we create a new \NGScopy{} instance, load the result of the normal sample previously saved in \refface{Section} \ref{sec:case2.1} and set the parameters for the tumor sample to detect CNVs.
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Create an instance of `NGScopy' class
+obj1 <- NGScopy$new(pcThreads=1)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Load the previously saved output of the normal
+obj1$load_normal("ngscopy-case2/tps_N8")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set a tumor sample (ID: tps_90) and specify a directory for output
+obj1$set_tumor(tps_90.chr6()$bamFpath)
+obj1$set_outFpre("ngscopy-case2/tps_90")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set the library size of the tumor
+obj1$set_libsizeT(4624267)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Show the input
+obj1$show()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Process the tumor
+obj1$proc_tumor()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Process the copy number
+obj1$proc_cn()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Process the segmentation
+obj1$proc_seg()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Plot
+obj1$plot_cn(ylim=c(-3,3))
+@
+\end{mdframed}
+
+
+
+\subsection{Process a second case (tumor) sample}
+\label{sec:case2.3}
+
+Then we process a second tumor sample via similar steps as in \refface{Section} \ref{sec:case2.2}.
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Create another instance of `NGScopy' class
+obj2 <- NGScopy$new(pcThreads=1)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Load the previously saved output of the normal
+obj2$load_normal("ngscopy-case2/tps_N8")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set a tumor sample (ID: tps_27) and specify a directory for output
+obj2$set_tumor(tps_27.chr6()$bamFpath)
+obj2$set_outFpre("ngscopy-case2/tps_27")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set the library size of the tumor
+obj2$set_libsizeT(10220498)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Show the input
+obj2$show()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Process the tumor
+obj2$proc_tumor()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Process the copy number
+obj2$proc_cn()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Process the segmentation
+obj2$proc_seg()
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Plot
+obj2$plot_cn(ylim=c(-3,3))
+@
+\end{mdframed}
+
+
+\subsection{Visualize the output}
+\begin{figure}[!ht]
+  \subfigure[ID: \code{tps_90}]{\includegraphics[width=0.45\textwidth]{ngscopy-case2/tps_90/ngscopy_out.pdf}}
+  \subfigure[ID: \code{tps_27}]{\includegraphics[width=0.45\textwidth]{ngscopy-case2/tps_27/ngscopy_out.pdf}}\\
+  \caption{Graphical output of ``Case Study II'' on a subregion of chromosome 6, showing CNVs of the sample \code{tps_90} and the sample \code{tps_27} against a common normal sample \code{tps_N8}.}
+\end{figure}
+
+
+\vfill
+\clearpage
+
+
+%% ------------------------------------------------------------------------
+%% 
+%% ------------------------------------------------------------------------
+
+
+\section{Case Study II(b): Analyzing the entire chromosome}
+\label{sec:case2b}
+Similarly as we did in \hyperref[sec:case2]{\quotes{Case study II}}, we apply the analysis to the entrie chromosome instead of the subregion ($chr6:41000001-81000000$) by setting the parameter \code{regions} appropriately, as described in \hyperref[sec:case1b]{\quotes{Case study I(b)}}.
+
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Create a new instance of `NGScopy' class
+obj <- NGScopy$new(pcThreads=1)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set the normal sample
+obj$set_normal(tps_N8.chr6()$bamFpath)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Read the regions from an external file 
+regions <- Xmisc::get_extdata('NGScopy','hg19_chr6_0_171115067.txt')
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## ## Or from a text input as we did before
+## regions <- read_regions("chr6 0 171115067")
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Set the regions
+obj$set_regions(regions)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Show the regions
+obj$get_regions()
+@
+\end{mdframed}
+
+We keep the rest codes intact and re-run them in the same order as in \hyperref[sec:case2]{\quotes{Case study II}} (\refface{Section} \ref{sec:case2.1}, \ref{sec:case2.2} and \ref{sec:case2.3}).
+
+\begin{figure}[!ht]
+  \subfigure[ID: \code{tps_90}]{\includegraphics[width=0.45\textwidth]{ngscopy-case2b/90_N8/ngscopy_out.pdf}}
+  \subfigure[ID: \code{tps_27}]{\includegraphics[width=0.45\textwidth]{ngscopy-case2b/27_N8/ngscopy_out.pdf}}\\
+  \caption{Graphical output of ``Case Study II'' on entire chromosome 6, showing CNVs of the sample \code{tps_90} and the sample \code{tps_27} against a common normal sample \code{tps_N8}.}
+\end{figure}
+
+\vfill
+\clearpage
+
+
+
+%% ========================================================================
+%% 
+%% ========================================================================
+
+
+\section[Run NGScopy from command line]{Run \NGScopy{} from command line}
+An executable R script, %
+%%{\setlength{\fboxsep}{0.5pt}\colorbox{gray}{\code{ngscopy}}} %slow
+\code{ngscopy}, %
+is placed at the \code{bin} subdirectory under the top level package directory. A complete source code of this executable is in \refface{Appendix} \ref{app:executable} on page \pageref{app:executable}.
+
+In this section, we introduce and run this executable R script from a command line on Unix or a Unix-like operating system.
+ 
+\subsection{Get the path of the executable R script} %%XB
+Given the \NGScopy{} package is installed, we can obtain the path of the executable \R{} script at the \R{} prompt:
+\begin{mdframed}
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+system.file('bin', 'ngscopy', package='NGScopy', mustWork=TRUE)
+@  
+
+<<echo=TRUE,eval=TRUE,results=verbatim>>=
+## Or,
+Xmisc::get_executable('NGScopy')
+@
+\end{mdframed}
+
+
+Alternatively, we can extract this path at Unix-like command-line interface (CLI):
+
+\begin{mdframed}
+\begin{Schunk}
+\begin{Sinput}
+ngscopyCmd=$(Rscript -e "cat(system.file('bin','ngscopy',package='NGScopy', mustWork=TRUE))")
+echo ${ngscopyCmd}
+
+## Or,
+ngscopyCmd=$(Rscript -e "cat(Xmisc::get_executable('NGScopy'))")
+echo ${ngscopyCmd}
+\end{Sinput}
+\end{Schunk}
+\end{mdframed}
+
+\subsection{Get help}
+\begin{mdframed}
+\begin{Schunk}
+\begin{Sinput}
+${ngscopyCmd} -h 
+
+## Or,
+${ngscopyCmd} --help
+\end{Sinput}
+\end{Schunk}
+\end{mdframed}
+
+This will print the help page at the console,
+
+\begin{mdframed}
+\begin{Schunk}
+\begin{Soutput}
+Usage:
+    ngscopy [options]
+
+Description:
+    ngscopy scans a pair of input BAM files to detect relative copy numb-
+er variants.
+
+Options:
+    h         logical   Print the help page. NULL
+
+    help      logical   Print the help page. NULL
+
+    inFpathN  character The file path to the control (normal) sample. NULL
+
+    inFpathT  character The file path to the case (tumor) sample. NULL
+
+    outFpre   character The file path of the directory for output. NULL
+
+    libsizeN  numeric   The library size of the control (normal) sample. NULL
+
+    libsizeT  numeric   The library size of the case (tumor) sample. NULL
+
+    mindepth  numeric   The minimal depth of reads per window. [ 20 ]
+
+    minsize   numeric   The minimal size of a window. [ 20000 ]
+
+    regions   character The regions, a text string or a file path indica-
+                        ting the regions with three columns (chr/start/e-
+                        nd) and without column names. [ NULL ]
+
+    segtype   character The type of segmentation. One of c("mean.norm","
+                        meanvar.norm","mean.cusum","var.css"). Multiple
+                        values are allowed and separated by ",". [ mean.norm ]
+
+    dsN       integer   The downsampling factor of the control (normal)
+                        sample. [ 1 ]
+
+    dsT       integer   The downsampling factor of the test (tumor) samp-
+                        le. [ 1 ]
+
+    pcThreads integer   The number of processors performing the parallel
+                         computing. [ 1 ]
+
+    auto.save logical   Whether to save (any completed results) automati-
+                        cally. [ FALSE ]
+
+    auto.load logical   Whether to load (any previously completed result-
+                        s) automatically. [ FALSE ]
+
+\end{Soutput}
+\end{Schunk}
+\end{mdframed}
+
+
+\subsection{An example}
+Let's run the command line version of the \hyperref[case1]{Case Study I(b)}.
+
+\begin{mdframed}
+\begin{Schunk}
+\begin{Sinput}
+ngscopyCmd=$(Rscript -e "cat(Xmisc::get_executable('NGScopy'))")
+
+## a normal sample, given the NGScopyData package is installed
+inFpathN=$(Rscript -e "cat(Xmisc::get_extdata('NGScopyData','tps_N8.chr6.sort.bam'))")
+
+## a tumor sample, given the NGScopyData pack is installed
+inFpathT=$(Rscript -e "cat(Xmisc::get_extdata('NGScopyData','tps_90.chr6.sort.bam'))")
+
+## set the regions, given the NGScopy package is installed
+regions=$(Rscript -e "cat(Xmisc::get_extdata('NGScopy','hg19_chr6_0_171115067.txt'))")
+
+time ${ngscopyCmd} --inFpathN=${inFpathN} --inFpathT=${inFpathT} --outFpre="ngscopy-case1b-cmdline" \
+--libsizeN=5777087 --libsizeT=4624267 --regions=${regions} --dsN=1 --dsT=1 --pcThreads=1
+\end{Sinput}
+\end{Schunk}
+\end{mdframed}
+
+A complete source code and the output of this example is in \refface{Appendix} \ref{app:cmdline_example} on page \pageref{app:cmdline_example}.
+
+
+\newpage
+\section*{Acknowledgement}
+\addcontentsline{toc}{section}{Acknowledgement}
+I appreciate Dr. Stergios J Moschos and Dr. D Neil Hayes for giving me advice and full support on developing the \Bioconductor{} \NGScopy{} package. I would also like to thank Vonn Walter for valuable discussion, Michele C Hayward and Ashley H Salazar for help in annotation of clinical samples and sample related data, and Xiaoying Yin for conducting DNA sequencing experiments.
+
+I thank the Bioconductor team, particularly Martin T. Morgan for reviewing the package and providing helpful comments.
+
+This project is supported by the University Cancer Research Fund.
+
+
+\newpage
+\appendix
+
+\begin{appendices}
+\label{app}
+
+\section{The source code}
+
+\newpage
+\subsection{The source code for the case study I}
+\label{app:case1}
+\vignetteSource{R/ngscopy-case1.R}{ngscopy-case1.R}
+\clearpage
+
+\newpage
+\subsection{The source code for the case study II}
+\label{app:case2}
+\vignetteSource{R/ngscopy-case2.R}{ngscopy-case2.R}
+\clearpage
+
+\newpage
+\subsection[The command-line executable R script]{The command-line executable \R{} script}
+\label{app:executable}
+\vignetteSource{R/ngscopy}{ngscopy}
+\clearpage
+
+
+\newpage
+\subsection[The command-line example Bash (Unix shell) script and the output]{The command-line example \code{Bash} (\code{Unix} \code{shell}) script and the output}
+\label{app:cmdline_example}
+\vignetteSource{sh/ngscopy-case1b-cmdline.sh}{ngscopy-case1b-cmdline.sh}
+
+The output,
+\vignetteSource{sh/ngscopy-case1b-cmdline.out}{ngscopy-case1b-cmdline.out}
+
+\clearpage
+
+
+\newpage
+\section{Comparison with full-scale NGS data}
+\label{app:fullngs}
+
+Here we compared the copy number calling in the follow two scenarios:
+
+\begin{enumerate}
+\item Using the $10\%$ subsample (\refface{Figure} \ref{fig:fullngs} \ref{fig:fullngs1} and \ref{fig:fullngs2}).
+\item Using the original data without any downsampling (\refface{Figure} \ref{fig:fullngs} \ref{fig:fullngs5} and \ref{fig:fullngs6}).
+\end{enumerate}
+
+The first scenario identified CNVs with $10\%$ of the original data. It also captured highly similar characteristics in the chromosome-wide view compared with the other scenario. Obviously, downsampling can reduce the computation time though may entail some loss of detail and precision. Whether to down-sample the data depends on the sequencing coverage properties (depth, broadness and distributions of reads) as well as the purpose of the analysis. It is always a good practice to make prelimilary tests with downsampled data. 
+
+\begin{figure}[!ht]
+  \subfigure[ID: \code{tps_90 (10\% subsample)}\label{fig:fullngs1}]{\includegraphics[width=0.45\textwidth]{ngscopy-case2b/90_N8/ngscopy_out.pdf}}
+  \subfigure[ID: \code{tps_27 (10\% subsample)}\label{fig:fullngs2}]{\includegraphics[width=0.45\textwidth]{ngscopy-case2b/27_N8/ngscopy_out.pdf}}\\
+  \subfigure[ID: \code{tps_90 (original sample)}\label{fig:fullngs5}]{\includegraphics[width=0.45\textwidth]{ngscopy-case0/90_N8/ngscopy_out.pdf}}
+  \subfigure[ID: \code{tps_27 (original sample)}\label{fig:fullngs6}]{\includegraphics[width=0.45\textwidth]{ngscopy-case0/27_N8/ngscopy_out.pdf}}
+  \caption{Graphical output for comparison of NGScopy calling between the $10\%$ subsample [\ref{fig:fullngs1} and \ref{fig:fullngs2}] and the original sample without downsampling [\ref{fig:fullngs5} and \ref{fig:fullngs6}].}
+  \label{fig:fullngs}
+\end{figure}
+
+
+\vfill
+\clearpage
+
+\end{appendices}
+
+
+
+\clearpage
+\bibliographystyle{plain}
+\bibliography{NGScopy-vignette}
+
+
+\end{document}

@@ -1,0 +1,21 @@
+
+
+Package Version 0.99.1 2014-08-15 15:44:34 EDT
+Package Version 0.99.1 2014-07-10 15:48:27 EDT
+--- --- --- --- --- --- --- --- --- --- --- --- 
+    o added [NGScopy] `force.rerun'.
+    o added [NGScopy] `MoreArgs.cn', `MoreArgs.seg'.
+    o added [NGScopy] `dsN', `dsT' for downsampling.
+    o added [NGScopy] `parse_segtype', `help_segtype'.
+    o added [NGScopy] `segtype', `calc_seg', `proc_seg' for segmentation.
+    o added [NGScopy] `read_regions'.
+    o added [NGScopy] `regions' for targted analysis.
+    o fixed [ngscopy-internal.R | .count_starts] `return matrix (rbind) instead of vector (c)'.
+    o fixed [ngscopy-internal.R | .count_starts] `duplicate row.names via c'.
+    o added `force.run to proc_normal, proc_tumor, calc_cn, make_data'.
+
+
+NGScopy Version 0.99.0 2014-06-10 13:36:41 EDT
+--- --- --- --- --- --- --- --- --- --- --- --- 
+    o The initial release.
+
