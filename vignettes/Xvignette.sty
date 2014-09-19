@@ -30,26 +30,38 @@
 \usepackage{caption}
 \captionsetup{margin=0pt,indention=0pt,parindent=0pt,font=small,textfont=default,labelfont=bf,singlelinecheck=off,justification=raggedright}
 
+
+
+%% ========================================================================
+%% frame around the code
+%% ========================================================================
+
 %% ------------------------------------------------------------------------
 %% 
 %% ------------------------------------------------------------------------
 \usepackage{boxedminipage}
+\newenvironment{myframe}{\begin{boxedminipage}{1\textwidth}}{\end{boxedminipage}}
 
 %% ------------------------------------------------------------------------
-%% 
+%% frame around the code
 %% ------------------------------------------------------------------------
-\usepackage{lipsum}
 
-\usepackage[framemethod=tikz]{mdframed}
+%% \usepackage{lipsum}
 
-\mdfsetup{
-  linewidth=1pt,
-  innerleftmargin=1em,
-  innerrightmargin=1em,
-  innertopmargin=1em,
-  innerbottommargin=1em
-  %backgroundcolor=gray
-}
+%% \usepackage[framemethod=tikz]{mdframed}
+
+%% \mdfsetup{
+%%   linewidth=1pt,
+%%   innerleftmargin=1em,
+%%   innerrightmargin=1em,
+%%   innertopmargin=1em,
+%%   innerbottommargin=1em
+%%   %backgroundcolor=gray
+%% }
+
+
+%% \newenvironment{myframe}{\begin{mdframed}}{\end{mdframed}}
+
 
 %% ------------------------------------------------------------------------
 %% 
