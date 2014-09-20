@@ -160,7 +160,7 @@ Modified: \currdate \quad Compiled: \mydate{\today}
 %% tableofcontents
 %% ------------------------------------------------------------------------
 
-\pdfbookmark[section]{\contentsname}{toc}
+%%\pdfbookmark[section]{\contentsname}{toc}% cross-flatform issue
 \tableofcontents
 
 
@@ -1002,29 +1002,29 @@ This project is supported by the University Cancer Research Fund.
 \newpage
 \subsection{The source code for the case study I}
 \label{app:case1}
-\vignetteSource{R/ngscopy-case1.R}{ngscopy-case1.R}
+\vignetteSource{ngscopy-case1.R}{ngscopy-case1.R}
 \clearpage
 
 \newpage
 \subsection{The source code for the case study II}
 \label{app:case2}
-\vignetteSource{R/ngscopy-case2.R}{ngscopy-case2.R}
+\vignetteSource{ngscopy-case2.R}{ngscopy-case2.R}
 \clearpage
 
 \newpage
 \subsection[The command-line executable R script]{The command-line executable \R{} script}
 \label{app:executable}
-\vignetteSource{R/ngscopy}{ngscopy}
+\vignetteSource{ngscopy}{ngscopy}
 \clearpage
 
 
 \newpage
 \subsection[The command-line example Bash (Unix shell) script and the output]{The command-line example \code{Bash} (\code{Unix} \code{shell}) script and the output}
 \label{app:cmdline_example}
-\vignetteSource{sh/ngscopy-case1b-cmdline.sh}{ngscopy-case1b-cmdline.sh}
+\vignetteSource{ngscopy-case1b-cmdline.sh}{ngscopy-case1b-cmdline.sh}
 
 The output,
-\vignetteSource{sh/ngscopy-case1b-cmdline.out}{ngscopy-case1b-cmdline.out}
+\vignetteSource{ngscopy-case1b-cmdline.out}{ngscopy-case1b-cmdline.out}
 
 \clearpage
 
