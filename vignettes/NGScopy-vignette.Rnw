@@ -1014,7 +1014,7 @@ This project is supported by the University Cancer Research Fund.
 \newpage
 \subsection[The command-line executable R script]{The command-line executable \R{} script}
 \label{app:executable}
-\vignetteSource{ngscopy.exe}{ngscopy}
+\vignetteSource{ngscopy.x}{ngscopy}
 \clearpage
 
 
