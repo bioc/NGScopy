@@ -170,8 +170,10 @@
 \newcommand{\ie}{\textit{i.e.}}
 
 \usepackage{lscape}                    % pdflscape.
-\usepackage{listings}
+\usepackage{pdflscape}
 
+
+\usepackage{listings}
 
 % \usepackage{ucs} %% needed for R output: signif stars etc, quotes
 
@@ -259,7 +261,7 @@
   
   \begin{source}
     \VerbatimInput[numbers=left,
-      fontsize=\scriptsize,
+      fontsize=\footnotesize, %\tiny; \scriptsize; \footnotesize; \small; \normalsize;
       frame=single,
       label=\scaption]{\Fpath}
     %\caption{\scaption}

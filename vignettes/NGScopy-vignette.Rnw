@@ -1,6 +1,6 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 
-%\VignetteIndexEntry{NGScopy: Detection of copy number variations in next generation sequencing: case studies and functionality}
+%\VignetteIndexEntry{NGScopy: Detection of copy number variations in next generation sequencing (User's Guide)}
 %\VignettePackage{NGScopy}
 %\VignetteDepends{NGScopyData}
 %\VignetteKeywords{Sequencing, CopyNumberVariation, DNASeq, TargetedResequencing, ExomeSeq, WholeGenome}

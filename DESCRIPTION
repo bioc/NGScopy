@@ -18,7 +18,7 @@ Depends:
 Imports:
     methods,
     parallel,
-    Xmisc (<= 0.2.1),
+    Xmisc (>= 0.2.1),
     rbamtools (>= 2.6.0),
     changepoint (>= 1.1.5)
 Suggests:
