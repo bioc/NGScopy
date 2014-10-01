@@ -65,7 +65,7 @@ obj$get_minsize()
 head(obj$get_regions())
 
 ## Get the segmentation type(s)
-head(obj$get_segtype())
+head(obj$get_segmtype())
 
 ## Get the down sampling factors
 obj$get_dsN()
@@ -104,10 +104,10 @@ obj$write_cn()
 ## Compute/Process the segmentation and save it
 ## ------------------------------------------------------------------------
 
-## A data.frame will be saved to file `ngscopy_seg.txt' in the output directory
-obj$calc_seg()
-obj$proc_seg()
-obj$write_seg() 
+## A data.frame will be saved to file `ngscopy_segm.txt' in the output directory
+obj$calc_segm()
+obj$proc_segm()
+obj$write_segm() 
 
 ## ------------------------------------------------------------------------
 ## Save the output for later reference
@@ -145,19 +145,19 @@ head(obj$get_depthT())
 str(obj$get_cn())
 
 ## Get the segmentation
-str(obj$get_seg())
+str(obj$get_segm())
 
 ## Get the data.frame of copy number calling
 data.cn <- obj$get_data.cn()
 head(data.cn)
 
 ## Get the data.frame of segmentation calling
-data.seg <- obj$get_data.seg()
-head(data.seg)
+data.segm <- obj$get_data.segm()
+head(data.segm)
 
 
 ## ------------------------------------------------------------------------
 ## Visualize the output
 ## ------------------------------------------------------------------------
 ## A figure will be saved to file `ngscopy_cn.pdf' in the output directory
-obj$plot_cn(ylim=c(-3,3))       # reset `ylim' to allow full-scale display
+obj$plot_out(ylim=c(-3,3))       # reset `ylim' to allow full-scale display

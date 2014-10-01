@@ -38,11 +38,11 @@ test.ngscopy.1 <- function(){
     )
 
   obj$write_cn()
-  obj$write_seg()
+  obj$write_segm()
 
-  obj$plot_cn()                                         # fixed y coordinates
-  obj$plot_cn("ngscopy_out_-3_3.pdf",ylim=c(-3,3))      # limited y coordinates
-  obj$plot_cn("ngscopy_out_free_y.pdf",scales='free_y') # free y coordinates
+  obj$plot_out()                                         # fixed y coordinates
+  obj$plot_out("ngscopy_out_-3_3.pdf",ylim=c(-3,3))      # limited y coordinates
+  obj$plot_out("ngscopy_out_free_y.pdf",scales='free_y') # free y coordinates
   
 }
 

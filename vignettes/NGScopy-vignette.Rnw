@@ -60,7 +60,7 @@
 
 \newcommand{\nsegtype}{%
 <<echo=FALSE,eval=TRUE,results=tex>>=%
-  cat(length(NGScopy::parse_segtype()))
+  cat(length(NGScopy::parse_segmtype()))
 @%
 }
 
@@ -104,7 +104,8 @@ Modified: \currdate \quad Compiled: \mydate{\today}
 
 \def\aftertitle{
   You may find the latest version of \NGScopy{} and this documentation at, \\
-  \url{http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html}\\
+  Latest stable release: \url{http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html}\\
+  Latest devel release: \url{http://www.bioconductor.org/packages/devel/bioc/html/NGScopy.html}\\
 }
 
 
@@ -271,19 +272,19 @@ obj$write_cn()
 
 <<echo=TRUE,eval=FALSE,results=verbatim>>=
 ## Compute the segmentation and save it
-## A data.frame will be saved to file `ngscopy_seg.txt' in the output directory
-obj$write_seg()
+## A data.frame will be saved to file `ngscopy_segm.txt' in the output directory
+obj$write_segm()
 @  
 
 <<echo=TRUE,eval=FALSE,results=verbatim>>=
 ## Plot he relative CNRs with the segmentation
 ## Figure(s) will be saved to file `ngscopy_out.pdf' in the output directory
-obj$plot_cn() 
+obj$plot_out() 
 @
 \end{myframe}
 
 \vspace{6ex}
-In the above code, we use the data provided in \Bioconductor{} \NGScopyData{} package \citeNGScopyData{}. We first create an instance of \code{NGScopy} class, an \R{} reference class \cite{Chambers2014un-R}. Calling the method \code{write_cn} automatically calls the method \code{proc_normal}, \code{proc_tumor}, \code{calc_cn}, \code{proc_cn} and \code{write_cn} in a row to perform window making, read counting in both samples, CNR computing and results processing and saves it in a tab separated file. Calling the method \code{write_seg} automatically calls the method \code{calc_seg}, \code{proc_seg} and \code{write_seg} in a row to perform segmentation and results processing and saves it in a tab separated file. Finnaly we visualize the results and save it in a pdf file.
+In the above code, we use the data provided in \Bioconductor{} \NGScopyData{} package \citeNGScopyData{}. We first create an instance of \code{NGScopy} class, an \R{} reference class \cite{Chambers2014un-R}. Calling the method \code{write_cn} automatically calls the method \code{proc_normal}, \code{proc_tumor}, \code{calc_cn}, \code{proc_cn} and \code{write_cn} in a row to perform window making, read counting in both samples, CNR computing and results processing and saves it in a tab separated file. Calling the method \code{write_segm} automatically calls the method \code{calc_segm}, \code{proc_segm} and \code{write_segm} in a row to perform segmentation and results processing and saves it in a tab separated file. Finnaly we visualize the results and save it in a pdf file.
 
 This small piece of code provides a compact solution. You may also refer to a functional equivalent step-by-step approach described below in \hyperref[sec:case1]{\quotes{Case study I}}. 
 
@@ -360,7 +361,7 @@ head(obj$get_regions())
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## Get the segmentation type(s)
-head(obj$get_segtype())
+head(obj$get_segmtype())
 @  
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
@@ -417,10 +418,10 @@ obj$write_cn()
 \subsection{Compute/Process the segmentation and save it}
 \begin{myframe}
 <<echo=TRUE,eval=FALSE,results=verbatim>>=
-## A data.frame will be saved to file `ngscopy_seg.txt' in the output directory
-obj$calc_seg()
-obj$proc_seg()
-obj$write_seg() 
+## A data.frame will be saved to file `ngscopy_segm.txt' in the output directory
+obj$calc_segm()
+obj$proc_segm()
+obj$write_segm() 
 @ 
 %
 \end{myframe}
@@ -481,8 +482,8 @@ head(data.cn)
 @  
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
-data.seg <- obj$get_data.seg()
-head(data.seg)
+data.segm <- obj$get_data.segm()
+head(data.segm)
 @ 
 %
 %\end{myframe}
@@ -495,7 +496,7 @@ head(data.seg)
 
 %% %% <<echo=TRUE,eval=TRUE,results=verbatim>>=
 %% %% ## Get the segmentation
-%% %% str(obj$get_seg())
+%% %% str(obj$get_segm())
 %% %% @  
 
 
@@ -503,7 +504,7 @@ head(data.seg)
 \begin{myframe}
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## A figure will be saved to file `ngscopy_cn.pdf' in the output directory
-obj$plot_cn(ylim=c(-3,3))       # reset `ylim' to NULL to allow full-scale display
+obj$plot_out(ylim=c(-3,3))       # reset `ylim' to NULL to allow full-scale display
 @ 
 \end{myframe}
 
@@ -565,7 +566,7 @@ Currently there are \nsegtype{} types of segmentation available, which can be ob
 
 \begin{myframe}
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
-NGScopy::parse_segtype()
+NGScopy::parse_segmtype()
 @
 \end{myframe}
 
@@ -573,7 +574,7 @@ Given a type of segmentation, we can get help of the algorithm by the code below
 
 \begin{myframe}
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
-## NGScopy::help_segtype("mean.norm")
+## NGScopy::help_segmtype("mean.norm")
 @
 \end{myframe}
 
@@ -587,12 +588,12 @@ obj <- NGScopy$new()
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## Set segtype with multiple values
-obj$set_segtype("mean.norm,meanvar.norm,mean.cusum,var.css")
+obj$set_segmtype("mean.norm,meanvar.norm,mean.cusum,var.css")
 @  
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## Get segtype
-obj$get_segtype()
+obj$get_segmtype()
 @
 \end{myframe}
 
@@ -711,12 +712,12 @@ obj1$proc_cn()
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## Process the segmentation
-obj1$proc_seg()
+obj1$proc_segm()
 @  
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## Plot
-obj1$plot_cn(ylim=c(-3,3))
+obj1$plot_out(ylim=c(-3,3))
 @
 \end{myframe}
 
@@ -766,12 +767,12 @@ obj2$proc_cn()
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## Process the segmentation
-obj2$proc_seg()
+obj2$proc_segm()
 @  
 
 <<echo=TRUE,eval=TRUE,results=verbatim>>=
 ## Plot
-obj2$plot_cn(ylim=c(-3,3))
+obj2$plot_out(ylim=c(-3,3))
 @
 \end{myframe}
 

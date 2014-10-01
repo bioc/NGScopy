@@ -47,8 +47,8 @@ see \code{changepoint}.}
 \item{\code{MoreArgs.cn}}{list, a list of arguments for method `calc_cn'.
 See \code{set_MoreArgs.cn}.}
 
-\item{\code{MoreArgs.seg}}{list, a list of arguments for method `calc_seg'.
-See \code{set_MoreArgs.seg}.}
+\item{\code{MoreArgs.segm}}{list, a list of arguments for method `calc_segm'.
+See \code{set_MoreArgs.segm}.}
 
 \item{\code{pcThreads}}{integer,
 the number of processors performing the parallel computing.}
@@ -69,7 +69,7 @@ any previous runs, default to c().}
 \describe{
 \item{\code{calc_cn()}}{Calculate the relative copy number ratios (CNRs) per window, using the depth in the control (normal) sample as denominator and the case (tumor) sample as numerator.}
 
-\item{\code{calc_seg()}}{Calculate the segment and detect the change points.}
+\item{\code{calc_segm()}}{Calculate the segment and detect the change points.}
 
 \item{\code{get_cn()}}{Get the copy number object.}
 
@@ -79,7 +79,7 @@ any previous runs, default to c().}
 
 \item{\code{get_dataN()}}{Get the data of the normal per window.}
 
-\item{\code{get_data.seg(as.granges = FALSE)}}{Get the data.frame of segmentation.}
+\item{\code{get_data.segm(as.granges = FALSE)}}{Get the data.frame of segmentation.}
 
 \item{\code{get_dataT()}}{Get the data of the normal per window.}
 
@@ -105,7 +105,7 @@ any previous runs, default to c().}
 
 \item{\code{get_MoreArgs.cn()}}{Get MoreArgs.cn}
 
-\item{\code{get_MoreArgs.seg()}}{Get MoreArgs.seg}
+\item{\code{get_MoreArgs.segm()}}{Get MoreArgs.segm}
 
 \item{\code{get_outFpre()}}{Get outFpre}
 
@@ -119,9 +119,9 @@ any previous runs, default to c().}
 
 \item{\code{get_regions()}}{Get regions.}
 
-\item{\code{get_seg()}}{Get the segmentation object.}
+\item{\code{get_segm()}}{Get the segmentation object.}
 
-\item{\code{get_segtype()}}{Get segtype, segmentation type(s).}
+\item{\code{get_segmtype()}}{Get segtype, segmentation type(s).}
 
 \item{\code{get_size()}}{Get the size per window.}
 
@@ -131,14 +131,14 @@ any previous runs, default to c().}
 
 \item{\code{load_normal(normalDpath)}}{Load a previously saved output of the normal. normalDpath: the path to the .RData file for the output of the normal.}
 
-\item{\code{plot_cn(pdfFpath, width, height, scales, xlim, ylim, xlab, ylab, ...,
-  MoreArgs.points, MoreArgs.segments)}}{Plot the output and save to a pdf file. pdfFpath: a file path (relative to outFpre) for the pdf output; width,height: see `grDevices::pdf'; scales: are scales shared across all chromossomes (i.e. x coordinates reflect the range of genomic coordinates per chromosome, y coordinates reflect the range of of CNRs per chromosome), given no specific `xlim' and `ylim' (the default, "fixed"), or do they vary across x coordinates ("free_x"), y coordinates ("free_y"), or both ("free"); xlim,ylim,xlab,ylab,...: see `graphics::plot'; MoreArgs.points: additional arguments as in `graphics::points'; MoreArgs.segments: additional arguments as in `graphics::segments'.}
+\item{\code{plot_out(pdfFpath, width, height, scales, xlim, ylim, xlab, ylab, ...,
+  MoreArgs.plotcn, MoreArgs.plotseg)}}{Plot the output and save to a pdf file. pdfFpath: a file path (relative to outFpre) for the pdf output; width,height: see `grDevices::pdf'; scales: are scales shared across all chromossomes (i.e. x coordinates reflect the range of genomic coordinates per chromosome, y coordinates reflect the range of of CNRs per chromosome), given no specific `xlim' and `ylim' (the default, "fixed"), or do they vary across x coordinates ("free_x"), y coordinates ("free_y"), or both ("free"); xlim,ylim,xlab,ylab,...: see `graphics::plot'; MoreArgs.plotcn: additional arguments as in `graphics::points'; MoreArgs.plotseg: additional arguments as in `graphics::segments'.}
 
 \item{\code{proc_cn()}}{Process the output of coy number object and return as a data.frame.}
 
 \item{\code{proc_normal()}}{Process the normal sample: make the windows and count the reads per window.}
 
-\item{\code{proc_seg()}}{Process the output of segmentation object and return as a data.frame.}
+\item{\code{proc_segm()}}{Process the output of segmentation object and return as a data.frame.}
 
 \item{\code{proc_tumor()}}{Process the tumor sample: count the reads per window.}
 
@@ -168,7 +168,7 @@ any previous runs, default to c().}
 
 \item{\code{set_MoreArgs.cn(...)}}{Set MoreArgs.cn. ..., (pseudocount: the pseudocounts added to the observed depth per window, default to 1; logr: logical, whether to make log2 transformation of the ratios, default to TRUE.)}
 
-\item{\code{set_MoreArgs.seg(...)}}{Set MoreArgs.seg. ..., a list of other arguments to the funciton of segmentation given by segtype. See `help_segtype'.}
+\item{\code{set_MoreArgs.segm(...)}}{Set MoreArgs.segm. ..., a list of other arguments to the funciton of segmentation given by segtype. See `help_segmtype'.}
 
 \item{\code{set_normal(inFpathN, mindepth, minsize)}}{Set a control (normal) sample and minimal depth/size per window. See `set_inFpathN', `set_mindepth', `set_minsize'.}
 
@@ -178,13 +178,13 @@ any previous runs, default to c().}
 
 \item{\code{set_regions(regions)}}{Set regions. regions: the regions in study, matrix, data.frame, character, file or connection with three columns (chr/start/end).}
 
-\item{\code{set_segtype(segtype)}}{Set the type of segmentation. segtype: a character vector with a single or multiple values from c("mean.norm","meanvar.norm","mean.cusum","var.css"). See `changepoint'.}
+\item{\code{set_segmtype(segtype)}}{Set the type of segmentation. segtype: a character vector with a single or multiple values from c("mean.norm","meanvar.norm","mean.cusum","var.css"). See `changepoint'.}
 
 \item{\code{set_tumor(inFpathT)}}{Set a case (tumor) sample. See `set_inFpathT'.}
 
 \item{\code{write_cn(cnFpath, ...)}}{Write the output of copy numbers as a data.frame to a tab separated file. cnFpath: a file path (relative to outFpre) for `cn' output; ...: see `Xmisc::write.data.table'.}
 
-\item{\code{write_seg(segFpath, ...)}}{Write the output of segments as a data.frame to a tab separated file. segFpath: a file path (relative to outFpre) for `seg' output; ...: see `Xmisc::write.data.table'.}
+\item{\code{write_segm(segFpath, ...)}}{Write the output of segments as a data.frame to a tab separated file. segFpath: a file path (relative to outFpre) for `seg' output; ...: see `Xmisc::write.data.table'.}
 }}
 \examples{
 require(NGScopy)
@@ -211,12 +211,12 @@ obj$show()                         # print the instance
 obj$write_cn()
 
 ## Compute the segmentation and save it
-## A data.frame will be saved to file `ngscopy_seg.txt' in the output directory
-obj$write_seg()
+## A data.frame will be saved to file `ngscopy_segm.txt' in the output directory
+obj$write_segm()
 
 ## Visualization
 ## A figure will be saved to file `ngscopy_out.pdf' in the output directory
-obj$plot_cn()
+obj$plot_out()
 }
 }
 \author{

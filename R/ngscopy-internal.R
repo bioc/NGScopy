@@ -136,14 +136,14 @@
 ## ------------------------------------------------------------------------
 
 
-## segtype <- paste(.parse_segtype(),sep='',collapse=',')
-.check_segtype <- function(segtype){
+## segtype <- paste(.parse_segmtype(),sep='',collapse=',')
+.check_segmtype <- function(segtype){
   if (!length(segtype)){
     return(character())
   }
   
   if (!is.character(segtype)){
-    stop('.check_segtype | segtype must be character.')
+    stop('.check_segmtype | segtype must be character.')
   }
 
   if (segtype %in% c("","NULL")){
@@ -157,17 +157,17 @@
 }
 
 
-.parse_segtype <- function(segtype){
+.parse_segmtype <- function(segtype){
   if (missing(segtype)){
     segtype <- c("mean.norm","meanvar.norm","mean.cusum","var.css")
   } else{
-    segtype <- match.arg(segtype,.parse_segtype())
+    segtype <- match.arg(segtype,.parse_segmtype())
   }
   return(segtype)
 }
 
-.parse_segfunc <- function(segtype){
-  segtype <- .parse_segtype(segtype)
+.parse_segmfunc <- function(segtype){
+  segtype <- .parse_segmtype(segtype)
   segfunc <- switch(
     segtype,
     mean.norm=func(changepoint::multiple.mean.norm,'multiple.mean.norm','changepoint'),
@@ -179,8 +179,8 @@
 }
 
 
-.help_segtype <- function(segtype){
-  segfunc <- .parse_segfunc(segtype)
+.help_segmtype <- function(segtype){
+  segfunc <- .parse_segmfunc(segtype)
   message(lprintf('%(package)s::%(name)s',as.environment(attributes(segfunc))),'\n')
   help(attr(segfunc,'name'),attr(segfunc,'package'))
 }
@@ -685,19 +685,19 @@
 ##' @param pcThreads 
 ##' @return segmants and plot
 ##' @author Xiaobei Zhao
-.calc_seg <- function(
+.calc_segm <- function(
   data,segtype,.ref,.dots,
   pcThreads=1
   ){
   
-  segtype <- match.arg(segtype,.parse_segtype())
-  segfunc <- .parse_segfunc(segtype)
+  segtype <- match.arg(segtype,.parse_segmtype())
+  segfunc <- .parse_segmfunc(segtype)
   ## ##logme(segtype)
 
   .data <- dfsplit(data,'chr',levels=.ref_to_refname(.ref))
   
   if (!length(.data)){
-    stop('.calc_seg | chr must not be empty.')
+    stop('.calc_segm | chr must not be empty.')
   }
 
   .unit <- function(x,segfunc,.dots){
@@ -734,7 +734,7 @@
 ##' @param pcThreads 
 ##' @return matrix
 ##' @author Xiaobei Zhao
-.proc_seg <- function(obj.cpt,data,pcThreads=1){
+.proc_segm <- function(obj.cpt,data,pcThreads=1){
   
   ## 
   .unit <- function(.obj.cpt,chr,.data){
@@ -811,26 +811,26 @@
 ##'
 ##' 
 ##' @title Unit plot segmentation
-##' @param data.seg the output of .proc_seg
+##' @param data.segm the output of .proc_segm
 ##' @param ... 
 ##' @return NULL
 ##' @author Xiaobei Zhao
-.unit_plot_seg <- function(chr,data.seg=NULL,...){
-  if (!length(data.seg)){
-    message('.unit_plot_seg | data.seg is empty')
+.unit_plot_segm <- function(chr,data.segm=NULL,...){
+  if (!length(data.segm)){
+    message('.unit_plot_segm | data.segm is empty')
     return()
   }
-  .data.seg <- data.seg[data.seg[,'chr']==chr,]
-  ncpt <- nrow(.data.seg)
+  .data.segm <- data.segm[data.segm[,'chr']==chr,]
+  ncpt <- nrow(.data.segm)
   for (i in seq(ncpt)){
-    if (.data.seg[i,'plottype']==1){
+    if (.data.segm[i,'plottype']==1){
       graphics::segments(
-        .data.seg[i,'start'],.data.seg[i,'mean'],.data.seg[i,'end'],.data.seg[i,'mean'],...
+        .data.segm[i,'start'],.data.segm[i,'mean'],.data.segm[i,'end'],.data.segm[i,'mean'],...
         )
-    } else if (.data.seg[i,'plottype']==2){
-      ## ##logme(.data.seg)
+    } else if (.data.segm[i,'plottype']==2){
+      ## ##logme(.data.segm)
       if (i != ncpt){ # only internal breaks, i.e. excluding the end
-        graphics::abline(v=.data.seg[i,'end'],...)
+        graphics::abline(v=.data.segm[i,'end'],...)
       }
     }
   }
@@ -847,23 +847,23 @@
   return(.mfrow)
 }
 
-.unit_plot_cn <- function(
+.unit_plot_out <- function(
   chr,chrlength,
   data.cn,
-  data.seg,
+  data.segm,
   xlim,ylim,
   xlab,ylab,
   ...,
-  MoreArgs.points,
-  MoreArgs.segments,
+  MoreArgs.plotcn,
+  MoreArgs.plotseg,
   scales=c("fixed","free_y","free_x","free")
   )
 {
   scales <- match.arg(scales)
   if(!length(xlab)) xlab='Positon'
   if(!length(ylab)) ylab='CNR'
-  if(!length(MoreArgs.points)) MoreArgs.points=list(pch=20,col='#BEBEBE7F',cex=1)
-  if(!length(MoreArgs.segments)) MoreArgs.segments=list(col='red',lwd=3,lty=1)
+  if(!length(MoreArgs.plotcn)) MoreArgs.plotcn=list(pch=20,col='#BEBEBE7F',cex=1)
+  if(!length(MoreArgs.plotseg)) MoreArgs.plotseg=list(col='red',lwd=3,lty=1)
     
   .data.cn <- data.cn[data.cn$chr==chr,]
 
@@ -873,19 +873,19 @@
   if (! scales %in% c("free_x","free")){
     if (!length(xlim)) xlim <- c(0,chrlength)
   }
-  .n <- length(data.seg)
+  .n <- length(data.segm)
   if (!.n){
     .pos <- .data.cn[,'pos']
     .cn <- .data.cn[,'cnr']
     if (!length(ylim)) ylim <- range(.data.cn[,'cnr'])
     graphics::plot(xlim,ylim,xlim=xlim,ylim=ylim,type="n",main=chr,xlab=xlab,ylab=ylab,...)
-    MoreArgs.points$x <- .pos
-    MoreArgs.points$y <- .cn
-    do.call(graphics::points,MoreArgs.points)    
+    MoreArgs.plotcn$x <- .pos
+    MoreArgs.plotcn$y <- .cn
+    do.call(graphics::points,MoreArgs.plotcn)    
   }
   .mfrow <- .parse_mfrow(.n)
   par(mfrow=.mfrow)
-  for (e in names(data.seg)){
+  for (e in names(data.segm)){
     message('chr=',chr,', ','segtype=',e)
     .pos <- .data.cn[,'pos']
     .cn <- .data.cn[,'cnr']
@@ -894,40 +894,40 @@
     ##logme(ylim)
     ##logme(chrlength)
     graphics::plot(xlim,ylim,xlim=xlim,ylim=ylim,type="n",main=sprintf('%s (%s)',chr,e),xlab=xlab,ylab=ylab,...)
-    MoreArgs.points$x <- .pos
-    MoreArgs.points$y <- .cn
-    do.call(graphics::points,MoreArgs.points)
-    MoreArgs.segments$chr <- chr
-    MoreArgs.segments$data.seg <- data.seg[[e]]
-    do.call(.unit_plot_seg,MoreArgs.segments)
+    MoreArgs.plotcn$x <- .pos
+    MoreArgs.plotcn$y <- .cn
+    do.call(graphics::points,MoreArgs.plotcn)
+    MoreArgs.plotseg$chr <- chr
+    MoreArgs.plotseg$data.segm <- data.segm[[e]]
+    do.call(.unit_plot_segm,MoreArgs.plotseg)
   }
 }
 
 
-.plot_cn <- function(
+.plot_out <- function(
   reflength,
   data.cn,
-  data.seg,
+  data.segm,
   pdfFpath,
   width,height,
   xlim,ylim,
   xlab,ylab,
   ...,
-  MoreArgs.points,
-  MoreArgs.segments,
+  MoreArgs.plotcn,
+  MoreArgs.plotseg,
   scales=c("fixed","free_y","free_x","free")
   ){
-  if (missing(data.seg)) data.seg <- NULL
+  if (missing(data.segm)) data.segm <- NULL
   if (missing(width)) width <- NULL
   if (missing(height)) height <- NULL
   if (missing(xlim)) xlim <- NULL
   if (missing(ylim)) ylim <- NULL
   if (missing(xlab)) xlab <- NULL
   if (missing(ylab)) ylab <- NULL
-  if (missing(MoreArgs.points)) MoreArgs.points <- NULL
-  if (missing(MoreArgs.segments)) MoreArgs.segments <- NULL
+  if (missing(MoreArgs.plotcn)) MoreArgs.plotcn <- NULL
+  if (missing(MoreArgs.plotseg)) MoreArgs.plotseg <- NULL
   
-  .n <- length(data.seg)
+  .n <- length(data.segm)
   .mfrow <- .parse_mfrow(.n)
   if (!length(width)) width <- 7*.mfrow[2]
   if (!length(height)) height <- 7*.mfrow[1]
@@ -941,15 +941,15 @@
     ##logme(reflength)
     ##logme(.refid)
     ##logme(.chrlength)
-    .unit_plot_cn(
+    .unit_plot_out(
       chr=.chr,chrlength=.chrlength,
       data.cn=data.cn,
-      data.seg=data.seg,
+      data.segm=data.segm,
       xlim=xlim,ylim=ylim,
       xlab=xlab,ylab=ylab,
       ...,
-      MoreArgs.points=MoreArgs.points,
-      MoreArgs.segments=MoreArgs.segments,
+      MoreArgs.plotcn=MoreArgs.plotcn,
+      MoreArgs.plotseg=MoreArgs.plotseg,
       scales=scales
       )
   }

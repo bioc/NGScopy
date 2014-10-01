@@ -20,7 +20,7 @@ citEntry(
     as.person("Xiaobei Zhao")
     ),
   year = "2014",
-  url = "http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html",
+  url = "http://www.bioconductor.org/packages/devel/bioc/html/NGScopy.html",
   note = "Bioconductor/R package",
   textVersion = 
   paste(
@@ -28,7 +28,8 @@ citEntry(
     "NGScopy: Detection of copy number variations in next generation sequencing", 
     "Bioconductor/R package",
     "2014",
-    "http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html",
+    "Latest stable release: http://www.bioconductor.org/packages/release/bioc/html/NGScopy.html",
+    "Latest devel release: http://www.bioconductor.org/packages/devel/bioc/html/NGScopy.html",
     sep=". "
   ),
   header = "Also please use the following citation:"

@@ -32,7 +32,7 @@ minsize: 20000
 regions: 
 chr6 0 171115067
 
-20140815 10:02:42 EDT | set_segtype
+20140815 10:02:42 EDT | set_segmtype
 segtype: c("mean.norm")
 
 20140815 10:02:42 EDT | set_ds | dsN
@@ -72,16 +72,16 @@ List of 3
 File saved: 
 outFpath="ngscopy-case1b-cmdline/ngscopy_cn.txt"
 
-20140815 10:05:12 EDT | write_seg
-20140815 10:05:12 EDT | proc_seg
-20140815 10:05:12 EDT | calc_seg
-20140815 10:05:12 EDT | set_MoreArgs.seg
-MoreArgs.seg not specified, assuming list().
-MoreArgs.seg: 
+20140815 10:05:12 EDT | write_segm
+20140815 10:05:12 EDT | proc_segm
+20140815 10:05:12 EDT | calc_segm
+20140815 10:05:12 EDT | set_MoreArgs.segm
+MoreArgs.segm not specified, assuming list().
+MoreArgs.segm: 
  list()
 
 
-20140815 10:05:12 EDT | calc_seg | done
+20140815 10:05:12 EDT | calc_segm | done
 out$seg:
 List of 1
  $ mean.norm:List of 1
@@ -101,9 +101,9 @@ List of 1
 
 
 File saved: 
-outFpath="ngscopy-case1b-cmdline/ngscopy_seg.txt"
+outFpath="ngscopy-case1b-cmdline/ngscopy_segm.txt"
 
-20140815 10:05:12 EDT | plot_cn
+20140815 10:05:12 EDT | plot_out
 chr=chr6, segtype=mean.norm
 
 File saved: 

@@ -81,10 +81,10 @@ obj1$proc_tumor()
 obj1$proc_cn()
 
 ## Process the segmentation
-obj1$proc_seg()
+obj1$proc_segm()
 
 ## Plot
-obj1$plot_cn(ylim=c(-3,3))
+obj1$plot_out(ylim=c(-3,3))
 
 ## ------------------------------------------------------------------------
 ## Process a second tumor
@@ -113,7 +113,7 @@ obj2$proc_tumor()
 obj2$proc_cn()
 
 ## Process the segmentation
-obj2$proc_seg()
+obj2$proc_segm()
 
 ## Plot
-obj2$plot_cn(ylim=c(-3,3))
+obj2$plot_out(ylim=c(-3,3))

@@ -1,28 +1,40 @@
 Package: NGScopy
 Type: Package
-Version: 0.99.1
-Date: 2014-08-15 23:25:47 EDT
+Version: 0.99.2
+Date: 2014-08-21 23:46:44 EDT
 Title: NGScopy: Detection of copy number variations in next generation
-        sequencing
-Description: NGScopy provides a quantitative caller for detecting copy
-        number variations in next generation sequencing (NGS),
-        including whole genome sequencing (WGS), whole exome sequencing
-        (WES) and targeted panel sequencing (TPS). The caller can be
-        parallelized by chromosomes to use multiple processors/cores on
-        one computer.
+    sequencing
+Description: NGScopy provides a quantitative caller for detecting copy number
+    variations in next generation sequencing (NGS), including whole genome
+    sequencing (WGS), whole exome sequencing (WES) and targeted panel
+    sequencing (TPS). The caller can be parallelized by chromosomes to use
+    multiple processors/cores on one computer.
 License: GPL (>=2)
 LazyLoad: TRUE
 NeedsCompilation: no
 Repository: Bioconductor
-Depends: R (>= 3.1.0)
-Imports: methods, parallel, Xmisc (>= 0.2.1), rbamtools (>= 2.6.0),
-        changepoint (>= 1.1.5)
-Suggests: RUnit, NGScopyData, GenomicRanges
-Collate: 'NGScopy-package.R' 'ngscopy-internal.R' 'ngscopy.R'
-        'ngscopy-test.R'
-Authors@R: c( person("Xiaobei", "Zhao", email="xiaobei@binf.ku.dk",
-        role=c("aut", "cre", "cph")) )
-Author: Xiaobei Zhao [aut, cre, cph]
+Depends:
+    R (>= 3.1.0)
+Imports:
+    methods,
+    parallel,
+    Xmisc (<= 0.2.1),
+    rbamtools (>= 2.6.0),
+    changepoint (>= 1.1.5)
+Suggests:
+    RUnit,
+    NGScopyData,
+    GenomicRanges
+Collate:
+    'NGScopy-package.R'
+    'ngscopy-internal.R'
+    'ngscopy.R'
+    'ngscopy-test.R'
+Authors@R: c(
+    person("Xiaobei", "Zhao", email="xiaobei@binf.ku.dk",
+    role=c("aut", "cre", "cph"))
+    )
 Maintainer: Xiaobei Zhao <xiaobei@binf.ku.dk>
 biocViews: CopyNumberVariation, DNASeq, TargetedResequencing, ExomeSeq,
-        WholeGenome, Sequencing
+    WholeGenome, Sequencing
+

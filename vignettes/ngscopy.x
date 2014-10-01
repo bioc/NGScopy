@@ -151,9 +151,9 @@ main <- function(){
   )
   
   obj$write_cn()
-  obj$write_seg()
-  ## obj$plot_cn()
-  obj$plot_cn(ylim=c(-3,3))
+  obj$write_segm()
+  ## obj$plot_out()
+  obj$plot_out(ylim=c(-3,3))
   
   invisible()
 }

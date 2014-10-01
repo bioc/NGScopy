@@ -46,8 +46,8 @@
 ##' @field dsT integer, the downsampling factor of the case (tumor) sample.
 ##' @field MoreArgs.cn list, a list of arguments for method `calc_cn'.
 ##' See \code{set_MoreArgs.cn}.
-##' @field MoreArgs.seg list, a list of arguments for method `calc_seg'.
-##' See \code{set_MoreArgs.seg}.
+##' @field MoreArgs.segm list, a list of arguments for method `calc_segm'.
+##' See \code{set_MoreArgs.segm}.
 ##' @field pcThreads integer,
 ##' the number of processors performing the parallel computing.
 ##' @field auto.save logical, whether to save (any completed results)
@@ -83,12 +83,12 @@
 ##' obj$write_cn()
 ##' 
 ##' ## Compute the segmentation and save it
-##' ## A data.frame will be saved to file `ngscopy_seg.txt' in the output directory
-##' obj$write_seg()
+##' ## A data.frame will be saved to file `ngscopy_segm.txt' in the output directory
+##' obj$write_segm()
 ##' 
 ##' ## Visualization
 ##' ## A figure will be saved to file `ngscopy_out.pdf' in the output directory
-##' obj$plot_cn()
+##' obj$plot_out()
 ##' }
 ##' 
 ##' @seealso \code{NGScopyData}
@@ -109,7 +109,7 @@ NGScopy <-
       dsN='integer',
       dsT='integer',
       MoreArgs.cn='list',
-      MoreArgs.seg='list',
+      MoreArgs.segm='list',
       pcThreads='integer',
       auto.save='logical',
       auto.load='logical',
@@ -166,7 +166,7 @@ NGScopy <-
           .set_regions()
         }
         if (length(segtype)){
-          .set_segtype()
+          .set_segmtype()
         }
         if (length(dsN)){
           .set_dsN()
@@ -177,8 +177,8 @@ NGScopy <-
         if (length(MoreArgs.cn)){
           .set_MoreArgs.cn()
         }
-        if (length(MoreArgs.seg)){
-          .set_MoreArgs.seg()
+        if (length(MoreArgs.segm)){
+          .set_MoreArgs.segm()
         }
         if (length(force.rerun)){
           .set_force.rerun()
@@ -448,18 +448,18 @@ NGScopy <-
           .set_regions()
         } 
       },
-      .set_segtype=function(){
+      .set_segmtype=function(){
         'For internal use only.'
-        stampmsg("set_segtype")
-        .self$segtype <- .check_segtype(.self$segtype)
+        stampmsg("set_segmtype")
+        .self$segtype <- .check_segmtype(.self$segtype)
         if (!length(.self$segtype)){
-          ##.default.segtype <- .parse_segtype()
-          ##.default.segtype <- "mean.cusum"
-          .default.segtype <- "mean.norm"
+          ##.default.segmtype <- .parse_segmtype()
+          ##.default.segmtype <- "mean.cusum"
+          .default.segmtype <- "mean.norm"
           message(sprintf(
             'segtype not specified, using a default of %s.',
-            vconcat(.default.segtype,capsule=TRUE,quote=TRUE)))
-          .self$segtype <- .default.segtype
+            vconcat(.default.segmtype,capsule=TRUE,quote=TRUE)))
+          .self$segtype <- .default.segmtype
         }
         out$segtype <<- .self$segtype
         ##
@@ -467,18 +467,18 @@ NGScopy <-
         message('')
         invisible()
       },
-      set_segtype=function(segtype){
+      set_segmtype=function(segtype){
         'Set the type of segmentation. segtype: a character vector with a single or multiple values from c("mean.norm","meanvar.norm","mean.cusum","var.css"). See `changepoint\'.'
         if (!missing(segtype)){
           if(length(.self$segtype)){
             message(sprintf(
-              'set_segtype | segtype (%s) is overridden by (%s).',
+              'set_segmtype | segtype (%s) is overridden by (%s).',
               vconcat(.self$segtype,quote=TRUE),
               vconcat(segtype,quote=TRUE)
               ))
           }
           .self$segtype <- segtype
-          .set_segtype()
+          .set_segmtype()
         }
         invisible()
       },
@@ -571,32 +571,32 @@ NGScopy <-
         }
         invisible()
       },
-      .set_MoreArgs.seg=function(){
+      .set_MoreArgs.segm=function(){
         'For internal use only.'
-        stampmsg("set_MoreArgs.seg")
-        if (!length(.self$MoreArgs.seg)){
-          message('MoreArgs.seg not specified, assuming list().')
-          .self$MoreArgs.seg <- list()
-          ## .self$MoreArgs.seg <- list(maxnseg=10)
+        stampmsg("set_MoreArgs.segm")
+        if (!length(.self$MoreArgs.segm)){
+          message('MoreArgs.segm not specified, assuming list().')
+          .self$MoreArgs.segm <- list()
+          ## .self$MoreArgs.segm <- list(maxnseg=10)
         }
-        out$MoreArgs.seg <<- MoreArgs.seg
+        out$MoreArgs.segm <<- MoreArgs.segm
         ##
-        message(cat('MoreArgs.seg: '))
-        message(str(.self$MoreArgs.seg))
+        message(cat('MoreArgs.segm: '))
+        message(str(.self$MoreArgs.segm))
         message('')
         invisible()        
       },
-      set_MoreArgs.seg=function(...){
-        'Set MoreArgs.seg. ..., a list of other arguments to the funciton of segmentation given by segtype. See `help_segtype\'.'
-        .MoreArgs.seg <- list(...)
-        if (length(.MoreArgs.seg)) {
-          if(length(.self$MoreArgs.seg)){
-            message('set_MoreArgs.seg | MoreArgs.seg is updated.')
+      set_MoreArgs.segm=function(...){
+        'Set MoreArgs.segm. ..., a list of other arguments to the funciton of segmentation given by segtype. See `help_segmtype\'.'
+        .MoreArgs.segm <- list(...)
+        if (length(.MoreArgs.segm)) {
+          if(length(.self$MoreArgs.segm)){
+            message('set_MoreArgs.segm | MoreArgs.segm is updated.')
           }
-          ##.self$MoreArgs.seg <- .MoreArgs.seg
-          ##.self$MoreArgs.seg <- utils::modifyList(.self$MoreArgs.seg,.MoreArgs.seg)
-          .self$MoreArgs.seg <- .MoreArgs.seg
-          .set_MoreArgs.seg()
+          ##.self$MoreArgs.segm <- .MoreArgs.segm
+          ##.self$MoreArgs.segm <- utils::modifyList(.self$MoreArgs.segm,.MoreArgs.segm)
+          .self$MoreArgs.segm <- .MoreArgs.segm
+          .set_MoreArgs.segm()
         }
         invisible()
       },
@@ -722,10 +722,10 @@ NGScopy <-
         'Get regions.'
         .refid_to_refname(.get_regions(),.get_ref(),'chr')
       },
-      get_segtype=function(){
+      get_segmtype=function(){
         'Get segtype, segmentation type(s).'
         if (!.loadme('segtype')){
-          .set_segtype()
+          .set_segmtype()
         }
         .self$segtype
       },
@@ -750,12 +750,12 @@ NGScopy <-
         }
         .self$MoreArgs.cn
       },
-      get_MoreArgs.seg=function(){
-        'Get MoreArgs.seg'
-        if (!.loadme('MoreArgs.seg')){
-          .set_MoreArgs.seg()
+      get_MoreArgs.segm=function(){
+        'Get MoreArgs.segm'
+        if (!.loadme('MoreArgs.segm')){
+          .set_MoreArgs.segm()
         }
-        .self$MoreArgs.seg
+        .self$MoreArgs.segm
       },
       get_pcThreads=function(){
         'Get pcThreads'
@@ -885,30 +885,30 @@ NGScopy <-
         }
         ret
       },
-      get_seg=function(){
+      get_segm=function(){
         'Get the segmentation object.'
-        if (!.loadme('seg','calc_seg')){
-          calc_seg()
+        if (!.loadme('seg','calc_segm')){
+          calc_segm()
         }
         if (!'seg' %in% names(out)){
-          stop('NGScopy$get_seg | seg is not available.')
+          stop('NGScopy$get_segm | seg is not available.')
         }
         out[['seg']]
       },
-      .get_data.seg=function(){
+      .get_data.segm=function(){
         'For internal use only.'
-        ## via proc_seg
-        if (!.loadme('data.seg','proc_seg')){
-          proc_seg()
+        ## via proc_segm
+        if (!.loadme('data.segm','proc_segm')){
+          proc_segm()
         }
-        if (!'data.seg' %in% names(out)){
-          stop('NGScopy$.get_data.seg | data.seg is not available.')
+        if (!'data.segm' %in% names(out)){
+          stop('NGScopy$.get_data.segm | data.segm is not available.')
         }
-        out[['data.seg']]
+        out[['data.segm']]
       },
-      get_data.seg=function(as.granges=FALSE){
+      get_data.segm=function(as.granges=FALSE){
         'Get the data.frame of segmentation.'
-        ret <- .get_data.seg()
+        ret <- .get_data.segm()
         ret <- lapply(ret,function(e) {e[!names(e) %in% c('plottype')]})
         ret <- do.call(rbind,lapply(names(ret),function(a) {cbind(ret[[a]],segtype=a)}))
         ret$segtype <- as.character(ret$segtype)
@@ -917,7 +917,7 @@ NGScopy <-
           if (length(.ret)){
             ret <- .ret
           } else{
-            stop('get_data.seg | Please set as.granges to FALSE.')
+            stop('get_data.segm | Please set as.granges to FALSE.')
           }
         }
         ret
@@ -1116,45 +1116,45 @@ NGScopy <-
           saveme()
         }
       },
-      calc_seg=function(){
+      calc_segm=function(){
         'Calculate the segment and detect the change points.'
 
-        if (.loadme('seg','calc_seg')) return()
+        if (.loadme('seg','calc_segm')) return()
         ##
         if (!'data.cn' %in% names(out)){
           proc_cn()
         }
         ##
-        stampmsg("calc_seg")
+        stampmsg("calc_segm")
         
         out$seg <<- list()
-        for (e in get_segtype()){
-          .MoreArgs.seg <- get_MoreArgs.seg()
-          ## if (e %in% parse_segtype()){        
-          ##   .MoreArgs.seg$Q <- .MoreArgs.seg$maxnseg
-          ##   .MoreArgs.seg$maxnseg <- NULL
+        for (e in get_segmtype()){
+          .MoreArgs.segm <- get_MoreArgs.segm()
+          ## if (e %in% parse_segmtype()){        
+          ##   .MoreArgs.segm$Q <- .MoreArgs.segm$maxnseg
+          ##   .MoreArgs.segm$maxnseg <- NULL
           ## }
-          .seg <- .calc_seg(.get_data.cn(),segtype=e,.ref=.get_ref(),.dots=.MoreArgs.seg,pcThreads=get_pcThreads())
-          out$seg[[e]] <<- .seg
+          .segm <- .calc_segm(.get_data.cn(),segtype=e,.ref=.get_ref(),.dots=.MoreArgs.segm,pcThreads=get_pcThreads())
+          out$seg[[e]] <<- .segm
         }
         if(auto.save){
           saveme()
         }
-        stampmsg('calc_seg | done')
+        stampmsg('calc_segm | done')
         message(cat('out$seg:'))
         message(str(out$seg))
         message('')
       },
-      proc_seg=function(){
+      proc_segm=function(){
         'Process the output of segmentation object and return as a data.frame.'        
 
-        if (.loadme('data.seg','proc_seg')) return()
+        if (.loadme('data.segm','proc_segm')) return()
         ##
-        stampmsg("proc_seg")
-        out$data.seg <<- list()
-        for (e in get_segtype()){
-          tmp <- .proc_seg(get_seg()[[e]],.get_data.cn(),pcThreads=get_pcThreads())
-          out$data.seg[[e]] <<- tmp
+        stampmsg("proc_segm")
+        out$data.segm <<- list()
+        for (e in get_segmtype()){
+          tmp <- .proc_segm(get_segm()[[e]],.get_data.cn(),pcThreads=get_pcThreads())
+          out$data.segm[[e]] <<- tmp
         }
         if(auto.save){
           saveme()
@@ -1172,29 +1172,29 @@ NGScopy <-
         tmp <- get_data.cn()
         write.data.table(cnFpath,tmp,...)
       },
-      write_seg=function(segFpath,...){
+      write_segm=function(segFpath,...){
         'Write the output of segments as a data.frame to a tab separated file. segFpath: a file path (relative to outFpre) for `seg\' output; ...: see `Xmisc::write.data.table\'.'
-        stampmsg("write_seg")
-        out$.segFpath <<- sprintf("%s/ngscopy_seg.txt",out$outFpre)
+        stampmsg("write_segm")
+        out$.segmFpath <<- sprintf("%s/ngscopy_segm.txt",out$outFpre)
         if (missing(segFpath)){
-          segFpath <- out$.segFpath
+          segFpath <- out$.segmFpath
         } else {
           segFpath <- sprintf("%s/%s",out$outFpre,segFpath)
         }
-        tmp <- get_data.seg()
+        tmp <- get_data.segm()
         write.data.table(segFpath,tmp,...)
       },
-      plot_cn=function(
+      plot_out=function(
         pdfFpath,
         width,height,
         scales,
         xlim,ylim,xlab,ylab,
         ...,
-        MoreArgs.points,
-        MoreArgs.segments
+        MoreArgs.plotcn,
+        MoreArgs.plotseg
         ){
-        'Plot the output and save to a pdf file. pdfFpath: a file path (relative to outFpre) for the pdf output; width,height: see `grDevices::pdf\'; scales: are scales shared across all chromossomes (i.e. x coordinates reflect the range of genomic coordinates per chromosome, y coordinates reflect the range of of CNRs per chromosome), given no specific `xlim\' and `ylim\' (the default, "fixed"), or do they vary across x coordinates ("free_x"), y coordinates ("free_y"), or both ("free"); xlim,ylim,xlab,ylab,...: see `graphics::plot\'; MoreArgs.points: additional arguments as in `graphics::points\'; MoreArgs.segments: additional arguments as in `graphics::segments\'.'
-        stampmsg("plot_cn")
+        'Plot the output and save to a pdf file. pdfFpath: a file path (relative to outFpre) for the pdf output; width,height: see `grDevices::pdf\'; scales: are scales shared across all chromossomes (i.e. x coordinates reflect the range of genomic coordinates per chromosome, y coordinates reflect the range of of CNRs per chromosome), given no specific `xlim\' and `ylim\' (the default, "fixed"), or do they vary across x coordinates ("free_x"), y coordinates ("free_y"), or both ("free"); xlim,ylim,xlab,ylab,...: see `graphics::plot\'; MoreArgs.plotcn: additional arguments as in `graphics::points\'; MoreArgs.plotseg: additional arguments as in `graphics::segments\'.'
+        stampmsg("plot_out")
         
         if (missing(width)) width <- NULL
         if (missing(height)) height <- NULL
@@ -1202,14 +1202,14 @@ NGScopy <-
         if (missing(ylim)) ylim <- NULL
         if (missing(xlab)) xlab <- NULL
         if (missing(ylab)) ylab <- NULL
-        if (missing(MoreArgs.points)) MoreArgs.points <- NULL
-        if (missing(MoreArgs.segments)) MoreArgs.segments <- NULL
+        if (missing(MoreArgs.plotcn)) MoreArgs.plotcn <- NULL
+        if (missing(MoreArgs.plotseg)) MoreArgs.plotseg <- NULL
         
         scales <- .parse_scales(scales)[1]
         ## 
         reflength <- .get_reflength()
         data.cn <- .get_data.cn()
-        data.seg <- .get_data.seg()
+        data.segm <- .get_data.segm()
         out$.pdfFpath <<- sprintf("%s/ngscopy_out.pdf",out$outFpre)
         if (missing(pdfFpath)){
           pdfFpath <- out$.pdfFpath
@@ -1217,10 +1217,10 @@ NGScopy <-
           pdfFpath <- sprintf("%s/%s",out$outFpre,pdfFpath)
         }
         ## 
-        .plot_cn(
+        .plot_out(
           reflength=reflength,
           data.cn=data.cn,
-          data.seg=data.seg,
+          data.segm=data.segm,
           pdfFpath=pdfFpath,
           width=width,
           height=height,
@@ -1229,8 +1229,8 @@ NGScopy <-
           xlab=xlab,
           ylab=ylab,
           ...,
-          MoreArgs.points=MoreArgs.points,
-          MoreArgs.segments=MoreArgs.segments,
+          MoreArgs.plotcn=MoreArgs.plotcn,
+          MoreArgs.plotseg=MoreArgs.plotseg,
           scales=scales
           )
       },
@@ -1246,7 +1246,7 @@ NGScopy <-
             mindepth=get_mindepth(),
             minsize=get_minsize(),
             regions=.get_regions(),
-            segtype=get_segtype(),
+            segtype=get_segmtype(),
             dsN=get_dsN(),
             windows=.get_windows(),
             size=get_size(),
@@ -1311,9 +1311,9 @@ NGScopy <-
           cat0('MoreArgs.cn:')
           cat0(str(.self$MoreArgs.cn))
         }
-        if (length(.self$MoreArgs.seg)){
-          cat0('MoreArgs.seg:')
-          cat0(str(.self$MoreArgs.seg))
+        if (length(.self$MoreArgs.segm)){
+          cat0('MoreArgs.segm:')
+          cat0(str(.self$MoreArgs.segm))
         }
         if (length(.self$auto.save)) cat0('auto.save: ',.self$auto.save)
         if (length(.self$auto.load)) cat0('auto.load: ',.self$auto.load)        
@@ -1367,9 +1367,9 @@ read_regions <- function(x){
 ##' @return the type of segmentation
 ##' @author Xiaobei Zhao
 ##' @examples
-##' parse_segtype()
-parse_segtype <- function(segtype){
-  .parse_segtype(segtype)
+##' parse_segmtype()
+parse_segmtype <- function(segtype){
+  .parse_segmtype(segtype)
 }
 
 
@@ -1379,15 +1379,15 @@ parse_segtype <- function(segtype){
 ##' 
 ##' @title Get help for segmentation functions
 ##' @param segtype character, the type of segmentation.
-##' See \code{parse_segtype()}
+##' See \code{parse_segmtype()}
 ##' @return NULL
 ##' @author Xiaobei Zhao
 ##' @examples
 ##' \dontrun{
-##' help_segtype(parse_segtype()[1])
+##' help_segmtype(parse_segmtype()[1])
 ##' }
-help_segtype <- function(segtype){
-  .help_segtype(segtype)
+help_segmtype <- function(segtype){
+  .help_segmtype(segtype)
 }
 
 
