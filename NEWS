@@ -1,4 +1,8 @@
 
+Package Version 1.2.1 2015-10-05 14:10:48 EDT
+--- --- --- --- --- --- --- --- --- --- --- ---
+    o fixed [DESCRIPTION] for dependent packages
+
 Package Version 0.99.2 2014-08-21 23:46:44 EDT
 --- --- --- --- --- --- --- --- --- --- --- --- 
     o added url for devel version.

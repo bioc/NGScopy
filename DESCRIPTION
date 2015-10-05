@@ -1,7 +1,7 @@
 Package: NGScopy
 Type: Package
-Version: 1.2.0
-Date: 2014-08-21 23:46:44 EDT
+Version: 1.2.1
+Date: 2015-10-05 14:03:04 EDT
 Title: NGScopy: Detection of copy number variations in next generation
     sequencing
 Description: NGScopy provides a quantitative caller for detecting copy number
@@ -18,9 +18,9 @@ Depends:
 Imports:
     methods,
     parallel,
-    Xmisc (>= 0.2.1),
-    rbamtools (>= 2.6.0),
-    changepoint (>= 1.1.5)
+    Xmisc (== 0.2.1),
+    rbamtools (== 2.6.0),
+    changepoint (-= 1.1.5)
 Suggests:
     RUnit,
     NGScopyData,
