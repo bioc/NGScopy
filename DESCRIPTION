@@ -1,8 +1,8 @@
 Package: NGScopy
 Type: Package
-Version: 1.3.3
-Date: 2015-10-05 14:03:04 EDT
-Title: NGScopy: Detection of copy number variations in next generation
+Version: 1.3.4
+Date: 2015-10-07 11:40:39 EDT
+Title: NGScopy: Detection of Copy Number Variations in Next Generation Sequencing
     sequencing
 Description: NGScopy provides a quantitative caller for detecting copy number
     variations in next generation sequencing (NGS), including whole genome
@@ -18,18 +18,20 @@ Depends:
 Imports:
     methods,
     parallel,
-    Xmisc,
+    Xmisc (>= 0.2.1),
     rbamtools (>= 2.6.0),
-    changepoint
+    changepoint (>= 2.1.1)
 Suggests:
     RUnit,
     NGScopyData,
     GenomicRanges
 Collate:
     'NGScopy-package.R'
+    'interface-to-cran-changepoint.R'
     'ngscopy-internal.R'
     'ngscopy.R'
     'ngscopy-test.R'
+    'archive.R'
     'zzz.R'
 Authors@R: c(
     person("Xiaobei", "Zhao", email="xiaobei@binf.ku.dk",
@@ -38,4 +40,4 @@ Authors@R: c(
 Maintainer: Xiaobei Zhao <xiaobei@binf.ku.dk>
 biocViews: CopyNumberVariation, DNASeq, TargetedResequencing, ExomeSeq,
     WholeGenome, Sequencing
-PackageStatus: Deprecated
+
