@@ -1421,10 +1421,15 @@ df.to.gr <- function(
   chrlength=NULL,
   start0=TRUE
   ){
+  
   if (!.check.packages("GenomicRanges")){
     message('df.to.gr | Package GenomicRanges is not installed.')
+    Rle <- NULL
+    IRanges <- NULL
+    GRanges <- NULL
+    `seqlengths<-` <- NULL
     return()
-  }
+  } 
   ## logme(search(),'df.to.gr | 1')
   x <- as.data.frame(x)
   n <- nrow(x)

@@ -20,17 +20,29 @@ importFrom(rbamtools,refID)
 importFrom(rbamtools,rewind)
 importFrom(rbamtools,size)
 
-#importFrom(changepoint,cpt.mean) 
-#importFrom(changepoint,cpt.meanvar) 
+
+## changepoint_1.1.5
+#importFrom(changepoint,cpt.mean) #NOUSE
+#importFrom(changepoint,cpt.meanvar) #NOUSE
+
+## importFrom(changepoint,multiple.mean.norm) #changepoint_1.1.5
+## importFrom(changepoint,multiple.meanvar.norm) #changepoint_1.1.5
+## importFrom(changepoint,multiple.mean.cusum) #changepoint_1.1.5
+## importFrom(changepoint,multiple.var.css) #changepoint_1.1.5
+
+
 importFrom(changepoint,cpttype) 
 importFrom(changepoint,cpts) 
 importFrom(changepoint,data.set.ts) 
 importFrom(changepoint,test.stat) 
-importFrom(changepoint,param.est) 
-importFrom(changepoint,multiple.mean.norm) 
-importFrom(changepoint,multiple.meanvar.norm) 
-importFrom(changepoint,multiple.mean.cusum) 
-importFrom(changepoint,multiple.var.css) 
+importFrom(changepoint,param.est)
+
+## changepoint_2.1.1
+importFrom(changepoint,cpt.mean)
+importFrom(changepoint,cpt.var)
+importFrom(changepoint,cpt.meanvar)
+
+
 
 
 ##' ------------------------------------------------------------------------

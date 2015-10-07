@@ -1,4 +1,9 @@
 
+Package Version 1.2.2 2015-10-07 09:42:28 EDT
+--- --- --- --- --- --- --- --- --- --- --- ---
+    o upgraded to use the latest version (2.1.1) of `changepoint`
+    
+
 Package Version 1.2.1 2015-10-05 14:10:48 EDT
 --- --- --- --- --- --- --- --- --- --- --- ---
     o fixed [DESCRIPTION] for dependent packages
