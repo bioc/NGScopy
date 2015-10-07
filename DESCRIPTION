@@ -32,7 +32,6 @@ Collate:
     'ngscopy.R'
     'ngscopy-test.R'
     'archive.R'
-    'zzz.R'
 Authors@R: c(
     person("Xiaobei", "Zhao", email="xiaobei@binf.ku.dk",
     role=c("aut", "cre", "cph"))
