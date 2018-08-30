@@ -220,13 +220,14 @@ The above functions have been intensively tested, and we plan to develop and inc
 \begin{myframe}
 <<echo=TRUE,eval=FALSE,results=verbatim>>=
 ## install NGScopy
-source("http://bioconductor.org/biocLite.R")
-biocLite("NGScopy")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("NGScopy")
 @ 
 
 <<echo=TRUE,eval=FALSE,results=verbatim>>=
 ## install NGScopyData for example data sets used in this guide
-biocLite("NGScopyData")
+BiocManager::install("NGScopyData")
 @ 
 \end{myframe}
 
