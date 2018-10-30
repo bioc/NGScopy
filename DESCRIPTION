@@ -1,6 +1,6 @@
 Package: NGScopy
 Type: Package
-Version: 1.16.0
+Version: 1.17.0
 Date: 2015-10-07 11:40:39 EDT
 Title: NGScopy: Detection of Copy Number Variations in Next Generation Sequencing
     sequencing
