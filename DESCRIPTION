@@ -1,6 +1,6 @@
 Package: NGScopy
 Type: Package
-Version: 1.17.1
+Version: 1.17.2
 Date: 2015-10-07 11:40:39 EDT
 Title: NGScopy: Detection of Copy Number Variations in Next Generation Sequencing
     sequencing
@@ -39,4 +39,5 @@ Authors@R: c(
 Maintainer: Xiaobei Zhao <xiaobei@binf.ku.dk>
 biocViews: ImmunoOncology, CopyNumberVariation, DNASeq, TargetedResequencing, ExomeSeq,
     WholeGenome, Sequencing
+PackageStatus: Deprecated
 
